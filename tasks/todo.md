@@ -1,5 +1,17 @@
 # Pocket task list
 
+> **Correction, 11 Nov (read this first).** This plan was written before the Google Drive project
+> document was read. That document says Pocket is already at **version 1.6 with 83 passing tests**, so
+> most tasks below are **already built**: one doorway for taps, gates, tick-box cards, Stop all, Calm
+> mode, OK and copy, share by file, the phone model download ("Get the AI") and the off-screen service.
+> It also shows that **Online AI on the PC is Jack's own choice** (off by default, falls back to the PC
+> model), so the "left out" table and Open Questions 2, 3 and 4 below are wrong.
+>
+> What still looks open, from that document: trying 1.6 on the real PC and phone (never confirmed),
+> setting the context size for "Sort it", a wording mismatch on the Do gate, an out-of-date install
+> guide, and locking the share file (it is plain text today). **Treat the rest of this file as a
+> draft to be rewritten once the real code can be checked.**
+
 Full details for each task are in `tasks/plan.md`. Status: **waiting for Jack's review.**
 
 ## Before anything
