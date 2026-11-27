@@ -1,4 +1,4 @@
-"""Male base mesh v6 (stylized mannequin) for the MHA RPG.
+"""Male base mesh v7 (stylized mannequin) for the MHA RPG.
 
 Run inside Blender: Scripting tab -> New -> paste -> Run Script.
 Real-world scale (1 unit = 1 m), 1.80 m tall, faces -Y, A-pose so clothes and
@@ -123,12 +123,12 @@ def leg(s):
     K = 1.22
     hip = link(pelvis, P((s * 0.088, 0.002, 0.915), 0.096, 0.096))
     th = link(hip, P((s * 0.093, -0.002, 0.720), 0.088, 0.092))     # thigh
-    knee = link(th, P((s * 0.096, -0.004, 0.500), 0.056, 0.058))
+    knee = link(th, P((s * 0.096, -0.004, 0.500), 0.052, 0.050))
     calf = link(knee, P((s * 0.098, 0.018, 0.360), 0.062, 0.074))
     ankle = link(calf, P((s * 0.098, 0.006, 0.090), 0.034, 0.036))
-    heel = link(ankle, P((s * 0.098, 0.040, 0.046), 0.040, 0.040))   # heel
+    heel = link(ankle, P((s * 0.098, 0.050, 0.046), 0.040, 0.040))   # heel
     mid = link(ankle, P((s * 0.100, -0.070, 0.050), 0.052, 0.044))   # foot arch
-    link(mid, P((s * 0.102, -0.190, 0.034), 0.054, 0.036))           # toe box
+    link(mid, P((s * 0.102, -0.225, 0.034), 0.054, 0.036))           # toe box
 
 
 leg(1)
@@ -184,7 +184,7 @@ def pinch_waist(zc, zr, sx, sy):
             v.co.y = (v.co.y - 0.005) * (1.0 - sy * w) + 0.005
 
 
-pinch_waist(1.11, 0.11, 0.22, 0.10)                     # narrow waist -> V shape
+pinch_waist(1.11, 0.11, 0.12, 0.06)                     # narrow waist -> V shape
 for sx in (1, -1):
     push((sx * 0.078, -0.13, 1.350), (0.085, 0.09, 0.070), 0.040, (sx * 0.15, -1, 0.1))  # pec
     push((sx * 0.078, -0.13, 1.272), (0.085, 0.07, 0.022), -0.012)       # pec lower edge
@@ -207,7 +207,7 @@ for sx in (1, -1):
     push((sx * 0.295, -0.030, 1.322), (0.040, 0.040, 0.070), 0.009)              # biceps
     push((sx * 0.405, 0.000, 1.130), (0.040, 0.040, 0.050), 0.007)               # forearm
     push((sx * 0.140, 0.00, 0.800), (0.05, 0.08, 0.12), 0.012, (sx, 0, 0))  # outer thigh
-    push((sx * 0.098, 0.07, 0.360), (0.05, 0.05, 0.09), 0.020, (0, 1, 0))   # calf
+    push((sx * 0.098, 0.07, 0.360), (0.05, 0.05, 0.09), 0.030, (0, 1, 0))   # calf
 push((0, -0.12, 1.12), (0.10, 0.07, 0.10), -0.014)                       # flatter belly
 push((0, -0.11, 0.86), (0.06, 0.05, 0.05), 0.010)                        # groin bulge (base layer)
 
@@ -262,7 +262,7 @@ body.lock_scale = (True, True, True)
 body_mesh.calc_loop_triangles()
 zs = [v.co.z for v in body_mesh.vertices]
 xs = [v.co.x for v in body_mesh.vertices]
-print(f"Male base v6: {len(body_mesh.polygons)} faces, "
+print(f"Male base v7: {len(body_mesh.polygons)} faces, "
       f"{len(body_mesh.loop_triangles)} tris")
 print(f"  height {max(zs):.2f} m, width incl. arms {max(xs) - min(xs):.2f} m")
 print("Tip: hover over the 3D window, press numpad period (.) to frame it.")

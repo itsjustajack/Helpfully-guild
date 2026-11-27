@@ -24,7 +24,7 @@ See `tasks/plan.md` for acceptance criteria.
 
 ## Stage 4 — Vertical slice
 - [ ] 4.1 Slice scope
-- [ ] 4.2 Base body (locked)
+- [ ] 4.2 Base body (locked) — male v7 passes 7/7 tests (`games/mha-rpg/blender/tests/test_male_base.py`); waiting on Bailey's eyes
 - [ ] 4.3 Hero costume
 - [ ] 4.4 Street art
 - [ ] 4.5 Lighting and look
