@@ -166,13 +166,72 @@ def ellipsoid(name, pos, normal, size, mat, bevel=False):
     return ob
 
 
+_gdg = bpy.context.evaluated_depsgraph_get()
+_gev = glove.evaluated_get(_gdg)
+_gme = _gev.to_mesh()
+GLOVE_BVH = BVHTree.FromPolygons([glove.matrix_world @ v.co for v in _gme.vertices],
+                                 [tuple(p.vertices) for p in _gme.polygons])
+_gev.to_mesh_clear()
+
+
+def hit_glove(x, z):
+    """Ray-cast onto the finished glove's outer surface from the back (+Y)."""
+    loc, nrm, _, _ = GLOVE_BVH.ray_cast(Vector((x, 0.15, z)), Vector((0, -1, 0)))
+    if loc is None:
+        return None
+    return loc, nrm.normalized()
+
+
+def armor_plate(name, cx, cz, w, h, lift=0.0015, n=8):
+    """Hard-surface plate that follows the hand: a small grid ray-cast onto the
+    back of the hand, then Solidify + Bevel + Weighted Normal (kept live)."""
+    b = bmesh.new()
+    grid = {}
+    for iz in range(n + 1):
+        for ix in range(n + 1):
+            x = cx + (ix / n - 0.5) * w
+            z = cz + (iz / n - 0.5) * h
+            hit = hit_glove(x, z)
+            if hit is None:
+                b.free()
+                return None
+            p, nr = hit
+            grid[ix, iz] = b.verts.new(p + nr * lift)
+    for iz in range(n):
+        for ix in range(n):
+            b.faces.new((grid[ix, iz], grid[ix + 1, iz],
+                         grid[ix + 1, iz + 1], grid[ix, iz + 1]))
+    bmesh.ops.recalc_face_normals(b, faces=b.faces)
+    # make sure the plate faces outward (+Y, the back of the hand)
+    if sum(f.normal.y for f in b.faces) < 0:
+        bmesh.ops.reverse_faces(b, faces=b.faces)
+    m = bpy.data.meshes.new(name)
+    b.to_mesh(m)
+    b.free()
+    ob = bpy.data.objects.new(name, m)
+    col.objects.link(ob)
+    ob.data.materials.append(M_ARMOR)
+    smooth(m)
+    add_cyl_uv(m)
+    s = ob.modifiers.new("Thickness", "SOLIDIFY")
+    s.thickness = 0.0028
+    s.offset = 1.0
+    s.use_even_offset = True
+    bv = ob.modifiers.new("Bevel", "BEVEL")
+    bv.width = 0.0009
+    bv.segments = 3
+    bv.limit_method = "ANGLE"
+    bv.harden_normals = True
+    bv.use_clamp_overlap = True
+    wn = ob.modifiers.new("WeightedNormal", "WEIGHTED_NORMAL")
+    wn.keep_sharp = True
+    return ob
+
+
 plates = 0
-for i, x in enumerate((-0.030, -0.010, 0.010, 0.028)):
-    hit = hit_surface(x, -0.090, 0.15)
-    if hit:
-        pos, nrm = hit
-        ellipsoid(f"SM_Glove_KnucklePlate_{i + 1:02d}", pos, nrm,
-                  (0.0105, 0.0125, 0.0035), M_ARMOR)
+for i, x in enumerate((-0.031, -0.0105, 0.0095, 0.0285)):
+    if armor_plate(f"SM_Glove_KnucklePlate_{i + 1:02d}", x, -0.090,
+                   0.017 if i < 3 else 0.012, 0.022):
         plates += 1
 
 grip = hit_surface(0.0, -0.050, -0.15)
