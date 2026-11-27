@@ -1,4 +1,4 @@
-"""Hand base v1 (right hand) for the MHA RPG glove test.
+"""Hand base v2 (right hand) for the MHA RPG glove test.
 
 Run inside Blender: Scripting tab -> New -> paste -> Run Script.
 Real-world scale (1 unit = 1 m). Forearm along +Z, wrist at z=0, hand hangs
@@ -65,38 +65,68 @@ squashed_cone(-0.095, 0.0, 0.044, 0.029, 0.55)    # palm: wrist -> knuckles
 
 # ---- four fingers -----------------------------------------------------------
 KNUCKLE_Z = -0.092
-# (x position, total length, base radius, curl multiplier)
+# (x position, total length, base radius, spread in degrees)
 FINGERS = [
-    (-0.030, 0.072, 0.0095, 1.0),   # index
-    (-0.010, 0.080, 0.0100, 1.0),   # middle
-    (0.010, 0.073, 0.0095, 1.0),    # ring
-    (0.028, 0.058, 0.0082, 1.0),    # pinky
+    (-0.030, 0.076, 0.0105, -5.0),   # index
+    (-0.010, 0.084, 0.0108, -1.0),   # middle
+    (0.010, 0.077, 0.0102, 2.5),     # ring
+    (0.028, 0.062, 0.0090, 7.0),     # pinky
 ]
 SPLIT = (0.43, 0.30, 0.27)          # proximal, middle, distal
 CURL = (10, 20, 15)                 # degrees, relaxed natural curl
 
-for x, length, r, curlk in FINGERS:
+
+def blob(p, r, scale):
+    """Flattened ellipsoid used for joints, nails and pads."""
+    bmesh.ops.create_uvsphere(
+        bm, u_segments=20, v_segments=10, radius=r,
+        matrix=Matrix.Translation(p) @ Matrix.Diagonal((*scale, 1.0)),
+    )
+
+
+for x, length, r, spread in FINGERS:
     p = Vector((x, -0.004, KNUCKLE_Z))
-    sphere(p, r * 1.12)                       # knuckle
+    sphere(p, r * 1.18)                        # knuckle (MCP joint bulge)
+    blob(p + Vector((0, 0.011, 0.002)), r, (1.0, 0.7, 0.9))   # back-of-hand knuckle
     angle = 0.0
     radius = r
-    for seg_frac, curl in zip(SPLIT, CURL):
-        angle += math.radians(curl) * curlk
-        d = Vector((0, -math.sin(angle), -math.cos(angle))) * (length * seg_frac)
+    sp = math.radians(spread)
+    for i, (seg_frac, curl) in enumerate(zip(SPLIT, CURL)):
+        angle += math.radians(curl)
+        d = Vector((math.sin(sp) * 0.35, -math.sin(angle), -math.cos(angle)))
+        d = d.normalized() * (length * seg_frac)
         q = p + d
-        r_end = radius * 0.84
+        r_end = radius * 0.86
+        # fingers are slightly flatter front-to-back than side-to-side
         capsule(p, q, radius, r_end)
+        if i < 2:                              # PIP / DIP joint bulges
+            sphere(q, r_end * 1.10)
+            blob(q + Vector((0, 0.004, 0)), r_end, (1.0, 0.75, 0.8))
         p, radius = q, r_end
+    # fingernail: thin plate on the back (+Y) of the fingertip
+    blob(p + Vector((0, 0.0045, 0.012)), radius * 0.95, (0.9, 0.22, 1.5))
+
+# ---- tendon ridges on the back of the hand ---------------------------------
+for x in (-0.030, -0.010, 0.010, 0.028):
+    capsule((x * 0.8, 0.0125, -0.012), (x, 0.0118, -0.088), 0.0032, 0.0036)
+
+# ---- palm pads (heel of hand, thumb base, under knuckles) -------------------
+blob(Vector((-0.020, -0.015, -0.030)), 0.020, (1.0, 0.55, 1.2))   # thumb pad
+blob(Vector((0.020, -0.013, -0.030)), 0.018, (1.0, 0.5, 1.3))     # heel pad
+blob(Vector((0.000, -0.015, -0.082)), 0.030, (1.4, 0.4, 0.5))     # knuckle pad
 
 # ---- thumb (on the -X side) -------------------------------------------------
 T = [
-    ((-0.022, -0.006, -0.018), 0.0125),
-    ((-0.048, -0.020, -0.058), 0.0112),
-    ((-0.060, -0.030, -0.086), 0.0098),
-    ((-0.064, -0.036, -0.108), 0.0082),
+    ((-0.022, -0.006, -0.018), 0.0135),
+    ((-0.046, -0.020, -0.056), 0.0120),
+    ((-0.062, -0.032, -0.084), 0.0108),
+    ((-0.070, -0.040, -0.110), 0.0092),
 ]
 for (a, ra), (b, rb) in zip(T, T[1:]):
     capsule(a, b, ra, rb)
+sphere(T[1][0], T[1][1] * 1.10)          # thumb knuckle
+sphere(T[2][0], T[2][1] * 1.10)          # thumb joint
+blob(Vector(T[3][0]) + Vector((0.0, 0.005, 0.012)), 0.0095, (0.9, 0.22, 1.5))  # thumbnail
 
 # ---- merge into one smooth surface -------------------------------------------
 parts_mesh = bpy.data.meshes.new("HandParts_tmp")
@@ -107,10 +137,10 @@ col.objects.link(tmp)
 
 rm = tmp.modifiers.new("Merge", "REMESH")
 rm.mode = "VOXEL"
-rm.voxel_size = 0.0015
+rm.voxel_size = 0.001
 sm = tmp.modifiers.new("Smooth", "SMOOTH")
-sm.factor = 1.0
-sm.iterations = 10
+sm.factor = 0.6        # light smoothing keeps knuckles, tendons and nails
+sm.iterations = 3
 
 dg = bpy.context.evaluated_depsgraph_get()
 final_mesh = bpy.data.meshes.new_from_object(tmp.evaluated_get(dg))
@@ -148,7 +178,7 @@ hand.lock_scale = (True, True, True)
 # ---- report -------------------------------------------------------------------
 final_mesh.calc_loop_triangles()
 zs = [v.co.z for v in final_mesh.vertices]
-print(f"Hand base v1: {len(final_mesh.polygons)} faces, "
+print(f"Hand base v2: {len(final_mesh.polygons)} faces, "
       f"{len(final_mesh.loop_triangles)} tris")
 print(f"Hand length wrist->fingertip: {abs(min(zs)) * 100:.1f} cm "
       f"(typical adult 17-20 cm)")
