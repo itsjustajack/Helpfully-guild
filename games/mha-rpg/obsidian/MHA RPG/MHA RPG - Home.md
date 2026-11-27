@@ -34,6 +34,7 @@ Fan project, not for sale. **Idea (draft, needs Bailey's yes):** a Skyrim-style 
 - [[Hero Rig]]
 - [[Anime Look]]
 - [[MHA Hero Tools Add-on]]
+- [[Pixel Hero Test]]
 
 ## Asset dashboard
 ```dataview
