@@ -14,7 +14,8 @@ summary: "Checklist of the next tasks per stage"
 - [ ] Bailey says yes to the one-sentence idea
 
 ## Stage 2 — Pre-production
-- [ ] Pick engine: Unreal Engine 5 or Godot (see [[MHA RPG - Decisions]])
+- [x] Pick engine: **Unreal Engine 5** (see [[MHA RPG - Decisions]])
+- [ ] Install Unreal Engine 5 (Epic Games Launcher) and open an empty project
 - [ ] Core design doc
 - [ ] Team owners per system
 - [ ] Engine project set up

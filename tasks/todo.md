@@ -6,7 +6,7 @@ See `tasks/plan.md` for acceptance criteria.
 - [ ] 1.1 Bailey says yes to the one-sentence idea  ← waiting on Bailey
 
 ## Stage 2 — Pre-production
-- [ ] 2.1 Pick engine: Unreal Engine 5 or Godot  ← waiting on Bailey
+- [x] 2.1 Pick engine: **Unreal Engine 5** (Bailey chose it)
 - [ ] 2.2 Core design doc (one page per system)
 - [ ] 2.3 Team owners per system
 - [ ] 2.4 Engine project set up and running

@@ -1,7 +1,7 @@
 # Production Brief: Player Hero (male base + Mid-Gauntlet + hero glove)
 
 **Type:** character (player hero, original — not a canon MHA character)
-**Target:** game engine — still undecided: Unreal Engine 5 (FBX) or Godot (GLB). Blocks the export step only.
+**Target:** game engine — **Unreal Engine 5 (decided by Bailey)**, FBX export
 **Style:** anime / cel (`anime-style`): 3-step cel shading + ink outline, per the design PDF section 3.1
 **Platform:** PC
 **Poly budget (whole character, LOD0):** 60,000 tris

@@ -13,7 +13,7 @@ summary: "Budgets, style and pipeline for the player hero"
 - **Style:** anime / cel shading + ink outline ([[Anime Look]])
 - **Platform:** PC · **Budget:** 60,000 tris for the whole character
 - **Body** 20k · **Hands** 6k each · **Glove** 8k each · **Gauntlet** 6k each · **Costume** 12k
-- **Export:** UE5 → FBX, Godot → GLB (needs engine decision)
+- **Engine:** Unreal Engine 5 (decided). **Export:** FBX, scale 1.0, skeleton mapped to the UE5 mannequin
 - **Rules:** base body first and locked; gear is separate; Checker passes before Bailey sees anything.
 
 Pipeline: planning ✅ · blockout ✅ · modeling ✅ · look test ✅ · topology ☐ · UVs ☐ · materials ☐ · rig (first pass ✅) · export ☐
