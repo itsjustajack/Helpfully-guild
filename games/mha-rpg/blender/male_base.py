@@ -58,6 +58,17 @@ def capsule(p0, p1, r0, r1):
     sphere(p1, r1)
 
 
+def tube_path(p0, p1, r0, r1, bulge=0.0, peak=0.75, step=0.010):
+    """Chain of overlapping spheres from p0 to p1: a smooth tapered limb with
+    an optional muscle bulge (biceps, calf). No beads, no ridges."""
+    p0, p1 = Vector(p0), Vector(p1)
+    n = max(2, int((p1 - p0).length / step))
+    for i in range(n + 1):
+        t = i / n
+        r = (r0 + (r1 - r0) * t) * (1.0 + bulge * math.sin(math.pi * t ** peak))
+        sphere(p0.lerp(p1, t), r)
+
+
 # ---- head and neck (faceless mannequin head) ---------------------------------
 blob(V(0, 0, 1.690), (0.089, 0.106, 0.118))        # skull
 blob(V(0, -0.006, 1.628), (0.070, 0.080, 0.070))   # jaw / chin
@@ -94,9 +105,11 @@ while z >= 0.84:
     w = torso_at(z)
     if w:
         blob(V(0, 0.004 if z < 1.1 else 0, z), (w[0], w[1], 0.030))
-    z -= 0.020
-blob(V(0.080, 0.040, 0.920), (0.082, 0.072, 0.085))    # glute R
-blob(V(-0.080, 0.040, 0.920), (0.082, 0.072, 0.085))   # glute L
+    z -= 0.008                                         # fine steps: no ridges
+blob(V(0.068, 0.045, 0.920), (0.074, 0.068, 0.080))    # glute R
+blob(V(-0.068, 0.045, 0.920), (0.074, 0.068, 0.080))   # glute L
+blob(V(0.080, -0.085, 1.370), (0.088, 0.046, 0.070))   # pec R
+blob(V(-0.080, -0.085, 1.370), (0.088, 0.046, 0.070))  # pec L
 
 # ---- arms (A-pose, 30 degrees from the body), built for both sides ----------
 A = math.radians(30)
@@ -116,17 +129,18 @@ def arm(side):
     el = sh + d * 0.300
     wr = el + d * 0.255
     # smooth arm: joint spheres match the limb radius (no beads)
-    capsule(sh, el, 0.056, 0.042)                      # shoulder -> elbow
-    capsule(el, wr, 0.042, 0.029)                      # elbow -> wrist
+    sphere(sh, 0.066)                                  # shoulder cap (deltoid)
+    tube_path(sh, el, 0.060, 0.044, bulge=0.10, peak=0.6)    # upper arm
+    tube_path(el, wr, 0.045, 0.030, bulge=0.12, peak=0.45)   # forearm
     # hand (bigger, fuller)
     palm_c = wr + d * 0.052
-    blob(palm_c, (0.052, 0.022, 0.060), Matrix((w, n, d)).transposed())
-    offs = (-0.031, -0.010, 0.010, 0.030)              # toward front first
-    lens = (0.082, 0.090, 0.082, 0.066)
+    blob(palm_c, (0.056, 0.024, 0.064), Matrix((w, n, d)).transposed())
+    offs = (-0.033, -0.011, 0.011, 0.032)              # toward front first
+    lens = (0.088, 0.096, 0.088, 0.071)
     for off, ln in zip(offs, lens):
-        p = wr + d * 0.105 + w * off
+        p = wr + d * 0.110 + w * off
         a = 0.0
-        r = 0.0125
+        r = 0.0138
         for frac, curl in ((0.43, 12), (0.30, 22), (0.27, 16)):
             a += math.radians(curl)
             q = p + (d * math.cos(a) + n * math.sin(a)) * (ln * frac)
@@ -153,13 +167,13 @@ def leg(side):
     hip = V(s * 0.090, 0, 0.930)
     knee = V(s * 0.095, -0.004, 0.500)
     ankle = V(s * 0.097, 0.006, 0.088)
-    capsule(hip, knee, 0.088, 0.060)                   # thigh (one smooth taper)
-    capsule(knee, ankle, 0.060, 0.038)                 # shin
-    blob(V(s * 0.097, 0.020, 0.360), (0.054, 0.060, 0.095))    # soft calf
+    tube_path(hip, knee, 0.098, 0.064, bulge=0.07, peak=0.55)    # thigh
+    tube_path(knee, ankle, 0.064, 0.040, bulge=0.16, peak=0.50)  # shin + calf
     # foot (toes point -Y), longer and fuller
-    blob(V(s * 0.097, 0.036, 0.046), (0.044, 0.050, 0.044))    # heel
-    capsule(V(s * 0.097, 0.000, 0.054), V(s * 0.100, -0.170, 0.038), 0.046, 0.038)
-    blob(V(s * 0.101, -0.192, 0.032), (0.044, 0.044, 0.030))   # toe box
+    blob(V(s * 0.097, 0.040, 0.048), (0.047, 0.054, 0.048))     # heel
+    blob(V(s * 0.099, -0.060, 0.070), (0.044, 0.095, 0.036))    # instep
+    capsule(V(s * 0.097, 0.000, 0.056), V(s * 0.100, -0.185, 0.040), 0.048, 0.040)
+    blob(V(s * 0.101, -0.208, 0.034), (0.047, 0.046, 0.032))    # toe box
 
 
 leg("R")
@@ -211,7 +225,7 @@ body.lock_scale = (True, True, True)
 body_mesh.calc_loop_triangles()
 zs = [v.co.z for v in body_mesh.vertices]
 xs = [v.co.x for v in body_mesh.vertices]
-print(f"Male base v2: {len(body_mesh.polygons)} faces, "
+print(f"Male base v3: {len(body_mesh.polygons)} faces, "
       f"{len(body_mesh.loop_triangles)} tris")
 print(f"  height {max(zs):.2f} m, width incl. arms {max(xs) - min(xs):.2f} m")
 print("Tip: hover over the 3D window, press numpad period (.) to frame it.")
