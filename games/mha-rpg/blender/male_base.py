@@ -1,4 +1,4 @@
-"""Male base mesh v5 (stylized mannequin) for the MHA RPG.
+"""Male base mesh v6 (stylized mannequin) for the MHA RPG.
 
 Run inside Blender: Scripting tab -> New -> paste -> Run Script.
 Real-world scale (1 unit = 1 m), 1.80 m tall, faces -Y, A-pose so clothes and
@@ -193,15 +193,47 @@ for sx in (1, -1):
     push((sx * 0.100, 0.03, 1.495), (0.06, 0.06, 0.04), 0.024, (0, 0, 1))  # trapezius
     push((sx * 0.070, 0.13, 0.905), (0.085, 0.09, 0.090), 0.050, (0, 1, 0))  # glute
     push((sx * 0.150, 0.00, 0.935), (0.05, 0.09, 0.08), 0.014, (sx, 0, 0))  # hip
-    push((sx * 0.098, -0.07, 0.505), (0.05, 0.05, 0.04), 0.006)          # kneecap
+    # legs: soft joints (Nova look A) - knee, quads, inner thigh, ankle
+    push((sx * 0.098, -0.065, 0.505), (0.040, 0.040, 0.035), 0.013)      # kneecap
+    push((sx * 0.098, -0.020, 0.430), (0.050, 0.050, 0.030), -0.006)     # under-knee dip
+    push((sx * 0.095, -0.060, 0.720), (0.060, 0.050, 0.120), 0.014)      # quads
+    push((sx * 0.072, -0.030, 0.580), (0.035, 0.045, 0.050), 0.012)      # inner knee muscle
+    push((sx * 0.098, 0.000, 0.140), (0.050, 0.050, 0.040), -0.006)      # slim above ankle
+    push((sx * 0.128, 0.000, 0.090), (0.020, 0.030, 0.025), 0.007, (sx, 0, 0))   # ankle bone out
+    push((sx * 0.070, 0.000, 0.095), (0.020, 0.030, 0.025), 0.006, (-sx, 0, 0))  # ankle bone in
+    push((sx * 0.100, -0.060, 0.070), (0.045, 0.060, 0.030), 0.008, (0, 0, 1))   # instep
+    # arms: elbow point at the back, biceps at the front, forearm near elbow
+    push((sx * 0.370, 0.040, 1.192), (0.030, 0.030, 0.030), 0.009, (0, 1, 0))    # elbow
+    push((sx * 0.295, -0.030, 1.322), (0.040, 0.040, 0.070), 0.009)              # biceps
+    push((sx * 0.405, 0.000, 1.130), (0.040, 0.040, 0.050), 0.007)               # forearm
     push((sx * 0.140, 0.00, 0.800), (0.05, 0.08, 0.12), 0.012, (sx, 0, 0))  # outer thigh
-    push((sx * 0.098, 0.07, 0.360), (0.05, 0.05, 0.09), 0.012, (0, 1, 0))   # calf
+    push((sx * 0.098, 0.07, 0.360), (0.05, 0.05, 0.09), 0.020, (0, 1, 0))   # calf
 push((0, -0.12, 1.12), (0.10, 0.07, 0.10), -0.014)                       # flatter belly
 push((0, -0.11, 0.86), (0.06, 0.05, 0.05), 0.010)                        # groin bulge (base layer)
 
+# ---- cleanup for the Checker (blender-asset-qa) ---------------------------------------
+# Skin modifier can leave stray points and doubled inner faces at branch joins.
+bmesh.ops.delete(sb, geom=[v for v in sb.verts if not v.link_faces], context="VERTS")
+seen = {}
+doubled = []
+for f in sb.faces:
+    key = frozenset(v.index for v in f.verts)
+    if key in seen:
+        doubled += [f, seen[key]]
+    else:
+        seen[key] = f
+if doubled:
+    bmesh.ops.delete(sb, geom=list(set(doubled)), context="FACES_ONLY")
+    bmesh.ops.delete(sb, geom=[v for v in sb.verts if not v.link_faces], context="VERTS")
 sb.normal_update()
 sb.to_mesh(body_mesh)
 sb.free()
+
+# simple cylindrical UV map so textures can be tested (proper UVs come later)
+uv = body_mesh.uv_layers.new(name="UVMap")
+for loop in body_mesh.loops:
+    co = body_mesh.vertices[loop.vertex_index].co
+    uv.data[loop.index].uv = (math.atan2(co.x, co.y) / math.tau + 0.5, co.z / 1.8)
 
 body = bpy.data.objects.new("SM_MaleBase", body_mesh)
 col.objects.link(body)
@@ -230,7 +262,7 @@ body.lock_scale = (True, True, True)
 body_mesh.calc_loop_triangles()
 zs = [v.co.z for v in body_mesh.vertices]
 xs = [v.co.x for v in body_mesh.vertices]
-print(f"Male base v5: {len(body_mesh.polygons)} faces, "
+print(f"Male base v6: {len(body_mesh.polygons)} faces, "
       f"{len(body_mesh.loop_triangles)} tris")
 print(f"  height {max(zs):.2f} m, width incl. arms {max(xs) - min(xs):.2f} m")
 print("Tip: hover over the 3D window, press numpad period (.) to frame it.")
