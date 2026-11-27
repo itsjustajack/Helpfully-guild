@@ -42,7 +42,7 @@ f = np.clip(f, 0, 1) ** 0.95
 # 5) vignette
 yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
 r = np.sqrt(((xx - w / 2) / (w / 2)) ** 2 + ((yy - h * 0.48) / (h / 2)) ** 2)
-f *= (1.0 - 0.38 * np.clip(r - 0.55, 0, 1) ** 1.4)[..., None]
+f *= (1.0 - 0.55 * np.clip(r - 0.45, 0, 1) ** 1.3)[..., None]
 
 cv2.imwrite(dst, (np.clip(f, 0, 1) * 255).astype(np.uint8))
 print("painted", dst)

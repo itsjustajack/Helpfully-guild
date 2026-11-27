@@ -533,12 +533,15 @@ if CHAR_MODE == "3d":
     build_characters()
 
 # ---- lights ----------------------------------------------------------------------------------------
-light("LGT_DeskLamp", "POINT", (LAMP[0] + 0.1, LAMP[1], 1.22), (1.0, 0.62, 0.28), 260, 0.12)
-light("LGT_Lantern", "POINT", (0.28, 3.4, 1.9), (1.0, 0.58, 0.22), 90, 0.08)
-light("LGT_Window", "AREA", (0.35, WY, 1.7), (0.5, 0.65, 1.0), 170, 1.3, rot=(0, -math.pi / 2, 0))
-light("LGT_Fill", "AREA", (8.5, -5.5, 6.5), (0.75, 0.78, 1.0), 260, 5.0,
+light("LGT_DeskLamp", "POINT", (LAMP[0] + 0.1, LAMP[1], 1.22), (1.0, 0.58, 0.24), 520, 0.12)
+light("LGT_Lantern", "POINT", (0.28, 3.4, 1.9), (1.0, 0.55, 0.2), 220, 0.08)
+light("LGT_ShelfGlow", "POINT", (3.2, 4.4, 1.6), (1.0, 0.6, 0.25), 22, 0.1)
+light("LGT_DoorGlow", "POINT", (4.2, 4.3, 2.2), (1.0, 0.6, 0.28), 12, 0.1)
+light("LGT_Window", "AREA", (0.35, WY, 1.7), (0.42, 0.58, 1.0), 120, 1.3, rot=(0, -math.pi / 2, 0))
+light("LGT_Fill", "AREA", (8.5, -5.5, 6.5), (0.6, 0.65, 1.0), 45, 5.0,
       rot=(math.radians(52), 0, math.radians(45)))
-light("LGT_Warm", "AREA", (3.2, 2.4, 3.6), (1.0, 0.72, 0.45), 110, 3.0)
+light("LGT_Warm", "AREA", (3.2, 2.4, 3.6), (1.0, 0.72, 0.45), 18, 3.0)
+light("LGT_Actors", "POINT", (3.0, 0.2, 2.2), (1.0, 0.68, 0.4), 160, 0.3)   # keeps the characters readable
 
 # ---- camera: true isometric, orthographic ---------------------------------------------------------
 target = Vector((3.0, 2.3, 1.0))
@@ -560,6 +563,6 @@ w = sc.world
 if not w.node_tree:
     w.use_nodes = True
 bg = next(n for n in w.node_tree.nodes if n.type == "BACKGROUND")
-bg.inputs["Color"].default_value = (0.045, 0.035, 0.035, 1)
-bg.inputs["Strength"].default_value = 1.0
+bg.inputs["Color"].default_value = (0.02, 0.016, 0.018, 1)
+bg.inputs["Strength"].default_value = 0.5
 print("Hero Office built:", len(col.objects), "objects")
