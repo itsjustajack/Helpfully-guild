@@ -18,8 +18,8 @@ from mathutils import Matrix, Vector
 from mathutils.bvhtree import BVHTree
 
 TARGET = "SM_HandBase_R"     # name of the hand object to fit to
-EASE = 0.0015                # gap between skin and glove (m)
-THICKNESS = 0.002            # glove fabric thickness (m)
+EASE = 0.0010                # gap between skin and glove (m)
+THICKNESS = 0.0012           # glove fabric thickness (m)
 CUFF_Z = 0.028               # glove opens at this height above the wrist (m)
 COL_NAME = "HeroGlove"
 
@@ -54,6 +54,25 @@ M_ARMOR = make_mat("M_Gauntlet_Armor", (0.12, 0.13, 0.15, 1), 0.9, 0.35)
 M_GRIP = make_mat("M_Glove_Grip", (0.01, 0.01, 0.012, 1), 0.0, 0.95)
 
 
+def add_cyl_uv(me):
+    """Simple cylindrical UV map around Z (placeholder until proper unwrap)."""
+    import math as _m
+    if me.uv_layers:
+        return
+    zs = [v.co.z for v in me.vertices] or [0.0]
+    z0, z1 = min(zs), max(zs)
+    span = (z1 - z0) or 1.0
+    uv = me.uv_layers.new(name="UVMap")
+    for poly in me.polygons:
+        flat_cap = abs(poly.normal.z) > 0.9      # end caps: project from above
+        for li in poly.loop_indices:
+            co = me.vertices[me.loops[li].vertex_index].co
+            if flat_cap:
+                uv.data[li].uv = (co.x * 4.0 + 0.5, co.y * 4.0 + 0.5)
+            else:
+                uv.data[li].uv = (_m.atan2(co.x, co.y) / _m.tau + 0.5, (co.z - z0) / span)
+
+
 def smooth(me):
     try:
         me.shade_smooth()
@@ -72,24 +91,45 @@ bm.from_mesh(src)
 bm.normal_update()
 for v in bm.verts:                       # push out by EASE along the normal
     v.co += v.normal * EASE
+# fuse the pushed-out surface into ONE clean shell (no overlaps between fingers)
+_fm = bpy.data.meshes.new("GloveFuse_tmp")
+bm.to_mesh(_fm)
+bm.free()
+_fo = bpy.data.objects.new("GloveFuse_tmp", _fm)
+col.objects.link(_fo)
+_r = _fo.modifiers.new("Fuse", "REMESH")
+_r.mode = "VOXEL"
+_r.voxel_size = 0.0012
+_d = _fo.modifiers.new("Budget", "DECIMATE")
+_d.ratio = 0.12
+_fused = bpy.data.meshes.new_from_object(_fo.evaluated_get(bpy.context.evaluated_depsgraph_get()))
+bpy.data.objects.remove(_fo, do_unlink=True)
+bpy.data.meshes.remove(_fm)
+bm = bmesh.new()
+bm.from_mesh(_fused)
+bpy.data.meshes.remove(_fused)
+
 # open the glove at the wrist: remove everything above the cuff line
 doomed = [f for f in bm.faces if all(v.co.z > CUFF_Z for v in f.verts)]
 bmesh.ops.delete(bm, geom=doomed, context="FACES")
 loose = [v for v in bm.verts if not v.link_faces]
 bmesh.ops.delete(bm, geom=loose, context="VERTS")
 
+bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-5)   # weld seams
+bmesh.ops.recalc_face_normals(bm, faces=bm.faces)          # consistent winding
 me = bpy.data.meshes.new("SM_HeroGlove")
 bm.to_mesh(me)
 bm.free()
 glove = bpy.data.objects.new("SM_HeroGlove", me)
 col.objects.link(glove)
 glove.data.materials.append(M_FABRIC)
+add_cyl_uv(me)
 smooth(me)
 sol = glove.modifiers.new("Thickness", "SOLIDIFY")
 sol.thickness = THICKNESS
 sol.offset = 1.0                         # grow outward, inner face stays put
-sub = glove.modifiers.new("Subsurf", "SUBSURF")
-sub.levels = 1
+sol.use_even_offset = True               # even thickness, no folding
+sol.use_quality_normals = True
 bpy.data.meshes.remove(src)
 
 # ---- 2. armour knuckle plates + palm grip pad, placed by ray casting ---------
@@ -122,6 +162,7 @@ def ellipsoid(name, pos, normal, size, mat, bevel=False):
     col.objects.link(ob)
     ob.data.materials.append(mat)
     smooth(m)
+    add_cyl_uv(m)
     return ob
 
 
@@ -137,7 +178,8 @@ for i, x in enumerate((-0.030, -0.010, 0.010, 0.028)):
 grip = hit_surface(0.0, -0.050, -0.15)
 if grip:
     pos, nrm = grip
-    ellipsoid("SM_Glove_PalmGrip", pos, nrm, (0.026, 0.034, 0.003), M_GRIP)
+    ellipsoid("SM_Glove_PalmGrip", pos - nrm * (EASE + THICKNESS), nrm,
+              (0.026, 0.034, 0.0055), M_GRIP)   # sunk in: crosses the glove, no flicker
 
 # ---- 3. fit report ------------------------------------------------------------
 bvh = BVHTree.FromObject(glove, bpy.context.evaluated_depsgraph_get())

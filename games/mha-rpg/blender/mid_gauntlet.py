@@ -41,6 +41,25 @@ M_DETAIL = make_mat("M_Gauntlet_Damper", (0.55, 0.57, 0.6, 1), 1.0, 0.25)
 
 
 # ---- helpers ---------------------------------------------------------------
+
+def add_cyl_uv(me):
+    """Simple cylindrical UV map around Z (placeholder until proper unwrap)."""
+    import math as _m
+    if me.uv_layers:
+        return
+    zs = [v.co.z for v in me.vertices] or [0.0]
+    z0, z1 = min(zs), max(zs)
+    span = (z1 - z0) or 1.0
+    uv = me.uv_layers.new(name="UVMap")
+    for poly in me.polygons:
+        flat_cap = abs(poly.normal.z) > 0.9      # end caps: project from above
+        for li in poly.loop_indices:
+            co = me.vertices[me.loops[li].vertex_index].co
+            if flat_cap:
+                uv.data[li].uv = (co.x * 4.0 + 0.5, co.y * 4.0 + 0.5)
+            else:
+                uv.data[li].uv = (_m.atan2(co.x, co.y) / _m.tau + 0.5, (co.z - z0) / span)
+
 def smooth(ob):
     me = ob.data
     try:
@@ -58,6 +77,7 @@ def add_object(name, bm, mat):
     col.objects.link(ob)
     ob.data.materials.append(mat)
     smooth(ob)
+    add_cyl_uv(me)
     return ob
 
 
@@ -105,9 +125,9 @@ tube("SM_Gauntlet_RimHigh", A_R1 + 0.004, A_R1 + 0.004, A_Z1 - 0.008, 0.014,
      M_DETAIL, thickness=0.004, bevel=0.0015)
 
 # Straps at wrist and upper forearm
-tube("SM_Gauntlet_StrapWrist", 0.044, 0.045, 0.015, 0.025, M_FABRIC,
+tube("SM_Gauntlet_StrapWrist", 0.0433, 0.0443, 0.015, 0.025, M_FABRIC,
      thickness=0.004, bevel=0.001)
-tube("SM_Gauntlet_StrapUpper", 0.054, 0.055, 0.25, 0.025, M_FABRIC,
+tube("SM_Gauntlet_StrapUpper", 0.0537, 0.0548, 0.25, 0.025, M_FABRIC,
      thickness=0.004, bevel=0.001)
 
 # Six recoil dampers (hydraulic rods) around the shell

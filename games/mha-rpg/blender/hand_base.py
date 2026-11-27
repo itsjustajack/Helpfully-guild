@@ -141,6 +141,8 @@ rm.voxel_size = 0.001
 sm = tmp.modifiers.new("Smooth", "SMOOTH")
 sm.factor = 0.6        # light smoothing keeps knuckles, tendons and nails
 sm.iterations = 3
+dec = tmp.modifiers.new("GameBudget", "DECIMATE")
+dec.ratio = 0.07       # ~172k -> ~12k tris (game hand budget)
 
 dg = bpy.context.evaluated_depsgraph_get()
 final_mesh = bpy.data.meshes.new_from_object(tmp.evaluated_get(dg))
@@ -149,7 +151,27 @@ final_mesh.name = "SM_HandBase_R"
 bpy.data.objects.remove(tmp, do_unlink=True)
 bpy.data.meshes.remove(parts_mesh)
 
+def add_cyl_uv(me):
+    """Simple cylindrical UV map around Z (placeholder until proper unwrap)."""
+    import math as _m
+    if me.uv_layers:
+        return
+    zs = [v.co.z for v in me.vertices] or [0.0]
+    z0, z1 = min(zs), max(zs)
+    span = (z1 - z0) or 1.0
+    uv = me.uv_layers.new(name="UVMap")
+    for poly in me.polygons:
+        flat_cap = abs(poly.normal.z) > 0.9      # end caps: project from above
+        for li in poly.loop_indices:
+            co = me.vertices[me.loops[li].vertex_index].co
+            if flat_cap:
+                uv.data[li].uv = (co.x * 4.0 + 0.5, co.y * 4.0 + 0.5)
+            else:
+                uv.data[li].uv = (_m.atan2(co.x, co.y) / _m.tau + 0.5, (co.z - z0) / span)
+
+
 hand = bpy.data.objects.new("SM_HandBase_R", final_mesh)
+add_cyl_uv(final_mesh)
 col.objects.link(hand)
 try:
     final_mesh.shade_smooth()
