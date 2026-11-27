@@ -34,3 +34,12 @@
 [submodule "third_party/claude-code-infrastructure-showcase"]
 	path = third_party/claude-code-infrastructure-showcase
 	url = https://github.com/diet103/claude-code-infrastructure-showcase.git
+[submodule "third_party/Tech-Skills"]
+	path = third_party/Tech-Skills
+	url = https://github.com/Yakoub-ai/Tech-Skills.git
+[submodule "third_party/tons-of-skills-marketplace"]
+	path = third_party/tons-of-skills-marketplace
+	url = https://github.com/jeremylongshore/tons-of-skills-marketplace.git
+[submodule "third_party/skillers"]
+	path = third_party/skillers
+	url = https://github.com/agent-sh/skillers.git
