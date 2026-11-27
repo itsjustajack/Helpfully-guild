@@ -1,4 +1,4 @@
-"""Male base mesh v7 (stylized mannequin) for the MHA RPG.
+"""Male base mesh v8 (stylized mannequin) for the MHA RPG.
 
 Run inside Blender: Scripting tab -> New -> paste -> Run Script.
 Real-world scale (1 unit = 1 m), 1.80 m tall, faces -Y, A-pose so clothes and
@@ -187,7 +187,7 @@ def pinch_waist(zc, zr, sx, sy):
 pinch_waist(1.11, 0.11, 0.12, 0.06)                     # narrow waist -> V shape
 for sx in (1, -1):
     push((sx * 0.078, -0.13, 1.350), (0.085, 0.09, 0.070), 0.040, (sx * 0.15, -1, 0.1))  # pec
-    push((sx * 0.078, -0.13, 1.272), (0.085, 0.07, 0.022), -0.012)       # pec lower edge
+    push((sx * 0.078, -0.13, 1.272), (0.085, 0.07, 0.038), -0.008)       # pec lower edge
     push((sx * 0.155, 0.04, 1.24), (0.05, 0.09, 0.12), 0.018, (sx, 0, 0))  # lats
     push((sx * 0.230, 0.00, 1.445), (0.065, 0.075, 0.065), 0.026)          # deltoid
     push((sx * 0.100, 0.03, 1.495), (0.06, 0.06, 0.04), 0.024, (0, 0, 1))  # trapezius
@@ -208,8 +208,28 @@ for sx in (1, -1):
     push((sx * 0.405, 0.000, 1.130), (0.040, 0.040, 0.050), 0.007)               # forearm
     push((sx * 0.140, 0.00, 0.800), (0.05, 0.08, 0.12), 0.012, (sx, 0, 0))  # outer thigh
     push((sx * 0.098, 0.07, 0.360), (0.05, 0.05, 0.09), 0.030, (0, 1, 0))   # calf
+# secondary forms (character-artist form order: primary -> secondary)
+for sx in (1, -1):
+    for cx, cy, cz in ((0.045, -0.080, 1.468), (0.092, -0.072, 1.478), (0.140, -0.060, 1.474)):
+        push((sx * cx, cy, cz), (0.030, 0.022, 0.014), 0.012)            # collarbone
+    for cz in (1.20, 1.13, 1.06):
+        push((sx * 0.032, -0.120, cz), (0.026, 0.030, 0.026), 0.008)     # ab pads
+    push((sx * 0.120, -0.040, 0.985), (0.040, 0.040, 0.030), 0.012)      # hip bone
+    push((sx * 0.085, 0.110, 1.360), (0.060, 0.040, 0.070), 0.016, (0, 1, 0))  # shoulder blade
+    push((sx * 0.026, -0.030, 1.550), (0.015, 0.022, 0.040), 0.007)      # neck muscle
+push((0, -0.135, 1.330), (0.015, 0.030, 0.060), -0.014)                  # breastbone groove
+push((0, -0.120, 1.130), (0.014, 0.030, 0.120), -0.009)                  # ab centre line
+push((0, 0.120, 1.200), (0.014, 0.030, 0.200), -0.010)                   # spine groove (back)
 push((0, -0.12, 1.12), (0.10, 0.07, 0.10), -0.014)                       # flatter belly
 push((0, -0.11, 0.86), (0.06, 0.05, 0.05), 0.010)                        # groin bulge (base layer)
+
+# relax small folds the Skin modifier leaves where the arms branch off the chest
+for cx in (0.07, -0.07):
+    region = [v for v in sb.verts
+              if (v.co - Vector((cx, -0.12, 1.29))).length < 0.07]
+    for _ in range(8):
+        bmesh.ops.smooth_vert(sb, verts=region, factor=0.5,
+                              use_axis_x=True, use_axis_y=True, use_axis_z=True)
 
 # ---- cleanup for the Checker (blender-asset-qa) ---------------------------------------
 # Skin modifier can leave stray points and doubled inner faces at branch joins.
@@ -262,7 +282,7 @@ body.lock_scale = (True, True, True)
 body_mesh.calc_loop_triangles()
 zs = [v.co.z for v in body_mesh.vertices]
 xs = [v.co.x for v in body_mesh.vertices]
-print(f"Male base v7: {len(body_mesh.polygons)} faces, "
+print(f"Male base v8: {len(body_mesh.polygons)} faces, "
       f"{len(body_mesh.loop_triangles)} tris")
 print(f"  height {max(zs):.2f} m, width incl. arms {max(xs) - min(xs):.2f} m")
 print("Tip: hover over the 3D window, press numpad period (.) to frame it.")
