@@ -59,17 +59,44 @@ def capsule(p0, p1, r0, r1):
 
 
 # ---- head and neck (faceless mannequin head) ---------------------------------
-blob(V(0, 0, 1.690), (0.085, 0.100, 0.112))        # skull
-blob(V(0, -0.006, 1.628), (0.068, 0.078, 0.068))   # jaw / chin
-capsule(V(0, 0.004, 1.600), V(0, 0, 1.500), 0.049, 0.058)   # neck
+blob(V(0, 0, 1.690), (0.089, 0.106, 0.118))        # skull
+blob(V(0, -0.006, 1.628), (0.070, 0.080, 0.070))   # jaw / chin
+capsule(V(0, 0.004, 1.600), V(0, 0, 1.500), 0.055, 0.064)   # neck
 
-# ---- torso --------------------------------------------------------------------
-blob(V(0, 0, 1.470), (0.200, 0.090, 0.060))        # shoulders / trapezius
-blob(V(0, -0.004, 1.340), (0.165, 0.108, 0.175))   # ribcage + chest
-blob(V(0, 0, 1.130), (0.135, 0.094, 0.125))        # abdomen
-blob(V(0, 0.006, 0.960), (0.160, 0.102, 0.125))    # pelvis
-blob(V(0.080, 0.045, 0.930), (0.085, 0.075, 0.085))   # glute R
-blob(V(-0.080, 0.045, 0.930), (0.085, 0.075, 0.085))  # glute L
+# ---- torso: one smooth loft (no stacked balloons) -----------------------------
+# (z, half-width x, half-depth y). Shoulders widest, narrow waist, hips narrower
+# than the shoulders (male proportions).
+TORSO = [
+    (1.50, 0.150, 0.085),
+    (1.46, 0.215, 0.092),
+    (1.40, 0.195, 0.108),
+    (1.32, 0.178, 0.114),
+    (1.24, 0.162, 0.108),
+    (1.16, 0.146, 0.098),
+    (1.08, 0.138, 0.094),
+    (1.00, 0.146, 0.099),
+    (0.94, 0.154, 0.104),
+    (0.88, 0.150, 0.100),
+    (0.84, 0.140, 0.092),
+]
+
+
+def torso_at(z):
+    for (z0, x0, y0), (z1, x1, y1) in zip(TORSO, TORSO[1:]):
+        if z1 <= z <= z0:
+            t = (z0 - z) / (z0 - z1)
+            return x0 + (x1 - x0) * t, y0 + (y1 - y0) * t
+    return None
+
+
+z = 1.50
+while z >= 0.84:
+    w = torso_at(z)
+    if w:
+        blob(V(0, 0.004 if z < 1.1 else 0, z), (w[0], w[1], 0.030))
+    z -= 0.020
+blob(V(0.080, 0.040, 0.920), (0.082, 0.072, 0.085))    # glute R
+blob(V(-0.080, 0.040, 0.920), (0.082, 0.072, 0.085))   # glute L
 
 # ---- arms (A-pose, 30 degrees from the body), built for both sides ----------
 A = math.radians(30)
@@ -88,32 +115,28 @@ def arm(side):
     sh = V(s * 0.205, 0, 1.455)
     el = sh + d * 0.300
     wr = el + d * 0.255
-    sphere(sh, 0.056)                                  # deltoid
-    capsule(sh, el, 0.047, 0.037)                      # upper arm
-    blob(sh + d * 0.12, (0.05, 0.048, 0.10))           # biceps / triceps bulk
-    sphere(el, 0.040)                                 # elbow
-    capsule(el, wr, 0.038, 0.027)                      # forearm
-    blob(el + d * 0.07, (0.046, 0.046, 0.075))         # forearm bulk
-    sphere(wr, 0.029)                                  # wrist
-    # hand
-    palm_c = wr + d * 0.048
-    blob(palm_c, (0.046, 0.019, 0.052), Matrix((w, n, d)).transposed())
-    offs = (-0.027, -0.009, 0.009, 0.026)              # toward front first
-    lens = (0.075, 0.082, 0.075, 0.060)
+    # smooth arm: joint spheres match the limb radius (no beads)
+    capsule(sh, el, 0.056, 0.042)                      # shoulder -> elbow
+    capsule(el, wr, 0.042, 0.029)                      # elbow -> wrist
+    # hand (bigger, fuller)
+    palm_c = wr + d * 0.052
+    blob(palm_c, (0.052, 0.022, 0.060), Matrix((w, n, d)).transposed())
+    offs = (-0.031, -0.010, 0.010, 0.030)              # toward front first
+    lens = (0.082, 0.090, 0.082, 0.066)
     for off, ln in zip(offs, lens):
-        p = wr + d * 0.095 + w * off
+        p = wr + d * 0.105 + w * off
         a = 0.0
-        r = 0.0098
+        r = 0.0125
         for frac, curl in ((0.43, 12), (0.30, 22), (0.27, 16)):
             a += math.radians(curl)
             q = p + (d * math.cos(a) + n * math.sin(a)) * (ln * frac)
             capsule(p, q, r, r * 0.86)
             p, r = q, r * 0.86
     # thumb: front side, angled out from the palm
-    tb = wr + d * 0.030 + w * -0.030
+    tb = wr + d * 0.034 + w * -0.034
     td = (d * 0.75 + w * -0.55 + n * 0.20).normalized()
-    p, r = tb, 0.0145
-    for ln in (0.040, 0.032, 0.028):
+    p, r = tb, 0.0175
+    for ln in (0.046, 0.036, 0.032):
         q = p + td * ln
         capsule(p, q, r, r * 0.86)
         p, r = q, r * 0.86
@@ -130,16 +153,13 @@ def leg(side):
     hip = V(s * 0.090, 0, 0.930)
     knee = V(s * 0.095, -0.004, 0.500)
     ankle = V(s * 0.097, 0.006, 0.088)
-    capsule(hip, knee, 0.082, 0.054)                   # thigh
-    blob(V(s * 0.092, -0.008, 0.730), (0.082, 0.088, 0.175))   # quad bulk
-    sphere(knee, 0.056)                                # knee
-    capsule(knee, ankle, 0.053, 0.034)                 # shin
-    blob(V(s * 0.097, 0.024, 0.350), (0.050, 0.058, 0.095))    # calf
-    sphere(ankle, 0.037)                               # ankle
-    # foot (toes point -Y)
-    blob(V(s * 0.097, 0.034, 0.042), (0.040, 0.046, 0.040))    # heel
-    capsule(V(s * 0.097, 0.000, 0.050), V(s * 0.099, -0.150, 0.036), 0.040, 0.034)
-    blob(V(s * 0.100, -0.172, 0.030), (0.040, 0.040, 0.027))   # toe box
+    capsule(hip, knee, 0.088, 0.060)                   # thigh (one smooth taper)
+    capsule(knee, ankle, 0.060, 0.038)                 # shin
+    blob(V(s * 0.097, 0.020, 0.360), (0.054, 0.060, 0.095))    # soft calf
+    # foot (toes point -Y), longer and fuller
+    blob(V(s * 0.097, 0.036, 0.046), (0.044, 0.050, 0.044))    # heel
+    capsule(V(s * 0.097, 0.000, 0.054), V(s * 0.100, -0.170, 0.038), 0.046, 0.038)
+    blob(V(s * 0.101, -0.192, 0.032), (0.044, 0.044, 0.030))   # toe box
 
 
 leg("R")
@@ -156,7 +176,7 @@ rm.mode = "VOXEL"
 rm.voxel_size = VOXEL
 sm = tmp.modifiers.new("Smooth", "SMOOTH")
 sm.factor = 0.8
-sm.iterations = 6
+sm.iterations = 10
 
 dg = bpy.context.evaluated_depsgraph_get()
 body_mesh = bpy.data.meshes.new_from_object(tmp.evaluated_get(dg))
@@ -191,7 +211,7 @@ body.lock_scale = (True, True, True)
 body_mesh.calc_loop_triangles()
 zs = [v.co.z for v in body_mesh.vertices]
 xs = [v.co.x for v in body_mesh.vertices]
-print(f"Male base v1: {len(body_mesh.polygons)} faces, "
+print(f"Male base v2: {len(body_mesh.polygons)} faces, "
       f"{len(body_mesh.loop_triangles)} tris")
 print(f"  height {max(zs):.2f} m, width incl. arms {max(xs) - min(xs):.2f} m")
 print("Tip: hover over the 3D window, press numpad period (.) to frame it.")
