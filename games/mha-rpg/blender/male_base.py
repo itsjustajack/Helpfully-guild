@@ -1,4 +1,4 @@
-"""Male base mesh v4 (stylized mannequin) for the MHA RPG.
+"""Male base mesh v5 (stylized mannequin) for the MHA RPG.
 
 Run inside Blender: Scripting tab -> New -> paste -> Run Script.
 Real-world scale (1 unit = 1 m), 1.80 m tall, faces -Y, A-pose so clothes and
@@ -64,7 +64,7 @@ upper = link(chest, P((0, -0.004, 1.420), 0.190, 0.126))
 neck_b = link(upper, P((0, 0.006, 1.500), 0.050, 0.052))
 neck_t = link(neck_b, P((0, 0.004, 1.580), 0.046, 0.050))
 h1 = link(neck_t, P((0, 0.000, 1.620), 0.070, 0.084))      # jaw
-h2 = link(h1, P((0, -0.002, 1.695), 0.092, 0.112))         # skull widest
+h2 = link(h1, P((0, -0.002, 1.695), 0.090, 0.100))         # skull widest
 link(h2, P((0, 0.000, 1.800), 0.066, 0.082))
 
 
@@ -153,6 +153,56 @@ body_mesh.name = "SM_MaleBase"
 bpy.data.objects.remove(tmp, do_unlink=True)
 bpy.data.meshes.remove(skel)
 
+# ---- procedural sculpt pass: soft brushes for male shape ---------------------------------
+# Each brush moves vertices by a smooth falloff (like a sculpt brush), so there
+# are no flaps or seams. Body faces -Y; +Y is the back.
+sb = bmesh.new()
+sb.from_mesh(body_mesh)
+
+
+def falloff(co, c, r):
+    d = ((co.x - c[0]) / r[0]) ** 2 + ((co.y - c[1]) / r[1]) ** 2 + ((co.z - c[2]) / r[2]) ** 2
+    return math.exp(-d * 2.0)
+
+
+def push(c, r, amount, direction=None):
+    """Move verts near c: along their normal (direction None) or a fixed axis."""
+    sb.normal_update()
+    dvec = Vector(direction) if direction else None
+    for v in sb.verts:
+        w = falloff(v.co, c, r)
+        if w > 1e-3:
+            v.co += (dvec if dvec else v.normal) * (amount * w)
+
+
+def pinch_waist(zc, zr, sx, sy):
+    """Narrow the torso around height zc (only the torso, not the arms)."""
+    for v in sb.verts:
+        if abs(v.co.x) < 0.22 and 0.90 < v.co.z < 1.40:
+            w = math.exp(-((v.co.z - zc) / zr) ** 2 * 2.0)
+            v.co.x *= 1.0 - sx * w
+            v.co.y = (v.co.y - 0.005) * (1.0 - sy * w) + 0.005
+
+
+pinch_waist(1.11, 0.11, 0.22, 0.10)                     # narrow waist -> V shape
+for sx in (1, -1):
+    push((sx * 0.078, -0.13, 1.350), (0.085, 0.09, 0.070), 0.040, (sx * 0.15, -1, 0.1))  # pec
+    push((sx * 0.078, -0.13, 1.272), (0.085, 0.07, 0.022), -0.012)       # pec lower edge
+    push((sx * 0.155, 0.04, 1.24), (0.05, 0.09, 0.12), 0.018, (sx, 0, 0))  # lats
+    push((sx * 0.230, 0.00, 1.445), (0.065, 0.075, 0.065), 0.026)          # deltoid
+    push((sx * 0.100, 0.03, 1.495), (0.06, 0.06, 0.04), 0.024, (0, 0, 1))  # trapezius
+    push((sx * 0.070, 0.13, 0.905), (0.085, 0.09, 0.090), 0.050, (0, 1, 0))  # glute
+    push((sx * 0.150, 0.00, 0.935), (0.05, 0.09, 0.08), 0.014, (sx, 0, 0))  # hip
+    push((sx * 0.098, -0.07, 0.505), (0.05, 0.05, 0.04), 0.006)          # kneecap
+    push((sx * 0.140, 0.00, 0.800), (0.05, 0.08, 0.12), 0.012, (sx, 0, 0))  # outer thigh
+    push((sx * 0.098, 0.07, 0.360), (0.05, 0.05, 0.09), 0.012, (0, 1, 0))   # calf
+push((0, -0.12, 1.12), (0.10, 0.07, 0.10), -0.014)                       # flatter belly
+push((0, -0.11, 0.86), (0.06, 0.05, 0.05), 0.010)                        # groin bulge (base layer)
+
+sb.normal_update()
+sb.to_mesh(body_mesh)
+sb.free()
+
 body = bpy.data.objects.new("SM_MaleBase", body_mesh)
 col.objects.link(body)
 body.location = (X_OFFSET, 0, 0)
@@ -180,7 +230,7 @@ body.lock_scale = (True, True, True)
 body_mesh.calc_loop_triangles()
 zs = [v.co.z for v in body_mesh.vertices]
 xs = [v.co.x for v in body_mesh.vertices]
-print(f"Male base v4: {len(body_mesh.polygons)} faces, "
+print(f"Male base v5: {len(body_mesh.polygons)} faces, "
       f"{len(body_mesh.loop_triangles)} tris")
 print(f"  height {max(zs):.2f} m, width incl. arms {max(xs) - min(xs):.2f} m")
 print("Tip: hover over the 3D window, press numpad period (.) to frame it.")
