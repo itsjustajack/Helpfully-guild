@@ -1,0 +1,36 @@
+[submodule "third_party/NFGames-Map-Editor"]
+	path = third_party/NFGames-Map-Editor
+	url = https://github.com/idnn-productions/NFGames-Map-Editor.git
+[submodule "third_party/dream-loop"]
+	path = third_party/dream-loop
+	url = https://github.com/achimala/dream-loop.git
+[submodule "third_party/Godot-Easy-Vehicle-Physics"]
+	path = third_party/Godot-Easy-Vehicle-Physics
+	url = https://github.com/DAShoe1/Godot-Easy-Vehicle-Physics.git
+[submodule "third_party/blender-skills"]
+	path = third_party/blender-skills
+	url = https://github.com/arjun988/blender-skills.git
+[submodule "third_party/cloud-blender-skills"]
+	path = third_party/cloud-blender-skills
+	url = https://github.com/patch-gg/cloud-blender-skills.git
+[submodule "third_party/claude-code"]
+	path = third_party/claude-code
+	url = https://github.com/anthropics/claude-code.git
+[submodule "third_party/Terrain3D"]
+	path = third_party/Terrain3D
+	url = https://github.com/TokisanGames/Terrain3D.git
+[submodule "third_party/JoltPhysics"]
+	path = third_party/JoltPhysics
+	url = https://github.com/jrouwe/JoltPhysics.git
+[submodule "third_party/Effekseer"]
+	path = third_party/Effekseer
+	url = https://github.com/effekseer/Effekseer.git
+[submodule "third_party/recastnavigation"]
+	path = third_party/recastnavigation
+	url = https://github.com/recastnavigation/recastnavigation.git
+[submodule "third_party/material-maker"]
+	path = third_party/material-maker
+	url = https://github.com/RodZill4/material-maker.git
+[submodule "third_party/claude-code-infrastructure-showcase"]
+	path = third_party/claude-code-infrastructure-showcase
+	url = https://github.com/diet103/claude-code-infrastructure-showcase.git
