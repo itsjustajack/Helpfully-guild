@@ -1,88 +1,92 @@
-# Plan — My Hero Academia Open-World RPG
+# Plan: Pixel Hero Card, then Layers
 
-Fan project, not for sale. Source spec: Bailey's two design PDFs plus `games/mha-rpg/PLAN.md` (the 8 stages). Standards: the `bailey-expectation` skill (5-star bar, Checker gate, no blocky shapes shown to Bailey).
+Spec: Obsidian note "Pixel Hero Plan" (direction C, chosen by Bailey) + `games/style-guide/STYLE_GUIDE.md`.
+Supersedes the old 3D plan (those files were removed; restore point git `c24715c`).
+Rules from Bailey that apply: nothing reaches him until the Checker passes; judge side by side with the
+reference, big and clear; never call a poor match good; one step at a time; body first, clothes second;
+free tools only; no AI image generators; original art only.
 
-## How work moves
+## Goal and success
+One front-facing MHA-style pixel hero (about 64x96) that Bailey looks at next to
+`ref_hero_on_street.png` and says "yes, that's it". Then it becomes the body layer.
 
-Bailey → Planner → Designer → Checker → Bailey. Nothing reaches Bailey until the Checker passes it. One step at a time; each step ends with a report and a proposed next step.
+## Method (the bet to test)
+The hero is **hand-placed on a pixel grid**: a text file where each character is a palette colour, one row
+per pixel row. A small script turns it into a PNG (hard pixels, no blur). This is different from my failed
+32x32 sprite, which was built from shapes. I look at every render myself, side by side with the reference.
 
-**Blockout rule:** greybox blocks are internal to the team (stage 3 only). Bailey sees only finished-quality work or plain written plans.
+## Where files go
+`games/pixel-hero/card/`: `palette.json`, `hero_body.txt` (the grid), `build_card.py` (grid -> PNG + 8x preview),
+`check_card.py` (the Checker), `previews/`. Old `games/pixel-hero/make_hero.py` stays untouched (superseded).
 
 ## Dependency graph
-
 ```
-Idea (1) ──► Engine pick (2a) ──► Tech setup (2c) ──► Prototype (3) ──► Vertical slice (4) ──► Production (5) ──► Alpha (6) ──► Beta (7) ──► Gold (8)
-        └──► Design doc (2b) ───┘        ▲
-                                 Asset pipeline (2d) ──► slice art (4)
+T1 Reference breakdown ──► T2 Silhouette (flat) ──► T3 Shaded body ──► T4 Head, face, shorts ──► T5 Outline + polish
+        │                                                                                              │
+        └─► palette.json ──────────────────────────────► (used by T3, T4, T5)                         ▼
+                                                                                         ★ CHECKPOINT C: Bailey judges
+                                                                                                      │ yes
+                                                                                                      ▼
+                                                                         T6 Split layers ──► T7 One shirt layer ──► T8 One hair variant
 ```
-
-- The engine decides everything after stage 2: tools, file formats, which collected repos are usable.
-- The asset pipeline (Blender → engine) must work before any art can reach Bailey.
-- Stage 3 needs the core design rules (Quirk heat/strain, movement, camera) written down first.
+T1 blocks everything. T2 to T5 are strictly in order (each builds on the last picture). T6 to T8 only start
+after Bailey says yes at Checkpoint C.
 
 ## Vertical slicing
+Every task ends with a picture Bailey can look at (not a hidden layer or a half-built system).
+Checker first (TDD): `check_card.py` is written before the art and fails until the art exists.
 
-Each task delivers one complete working path, not one layer. Example: "player uses a Quirk and the heat meter rises and hurts them" covers input + ability + meter + HUD + feedback together, not "build all HUD first".
+## Tasks
 
-## Stages and tasks
+### T0 — Checker first (RED)
+- Write `check_card.py`: file exists, size 64x96, transparent background, only hard pixels (alpha 0 or 255),
+  palette ≤ 24 colours, no stray single pixels (orphan pixels) inside the figure, outline is continuous
+  around the silhouette, left/right balance within tolerance.
+- **Accept:** running it before any art fails with a clear message. **Verify:** run it, see RED.
 
-### Stage 1 — Idea
-- **1.1 Lock the one-sentence idea.**
-  Accept: Bailey says yes to the sentence and to who plays it.
-  Verify: his yes is recorded in `games/mha-rpg/PLAN.md`.
+### T1 — Reference breakdown
+- Measure `ref_hero_on_street.png`: hero height in px, head size, shoulder/hip/knee/foot landmarks, pixel scale
+  (screen px per art pixel). Extract a palette (≤ 24 colours) with 4-tone ramps for skin, hair, shorts, outline.
+- **Accept:** a measurements table + `palette.json` + a swatch image. Proportions written in "heads".
+- **Verify:** I overlay the landmarks on the reference and show Bailey the swatch.
+- ★ **Checkpoint A:** Bailey OK on the palette and proportions.
 
-**Checkpoint A:** idea locked.
+### T2 — Flat silhouette (slice 1)
+- Hand-place the whole figure in one flat tone per part (skin, hair, shorts) at 64x96, correct pose and proportions.
+- **Accept:** Checker passes except shading/outline rules; landmarks within ±3 px of the scaled reference.
+- **Verify:** side-by-side image: reference | my silhouette, enlarged 8x.
 
-### Stage 2 — Pre-production
-- **2.1 Pick the engine** (Unreal Engine 5 or Godot).
-  Accept: Bailey's choice recorded; free-tools rule (rule 14) still met.
-  Verify: engine installs and opens an empty project on Bailey's PC.
-- **2.2 Core design doc** — one page per system, plain words: Quirk types and body cost, use-to-improve progression, three paths (Hero / Villain / Vigilante), law and collateral meter, gear slots.
-  Accept: every system traced to a PDF section; nothing invented without a "draft — needs Bailey's yes" tag.
-  Verify: Checker compares doc against both PDFs, section by section.
-- **2.3 Team and order of work** — which role owns which system (Lead Developer, Art Director, QA Director, Narrative Director, Story Writer, Lore Writer, World Builder Director).
-  Accept: every system has one owner; Checker step named on each.
-- **2.4 Project setup** — repo folder `games/mha-rpg/`, engine project, version control, build that runs.
-  Accept: empty project opens and runs on Bailey's PC.
-  Verify: Lead Developer runs it firsthand; screenshot.
-- **2.5 Asset pipeline test** — one real model (the Blender glove test) goes Blender → engine with full PBR maps.
-  Accept: model shows in engine with all maps, correct scale, no errors.
-  Verify: Checker side-by-side render, big and clear.
-- **2.6 Rough timeline** — exact dates per stage, worked out after 2.1–2.5.
+### T3 — Shaded body (slice 2)
+- Add 3-4 tone ramps, light from the top-left, hue-shifted shadows; muscle forms (pecs, abs, arms, thighs), hands, feet.
+- **Accept:** ≤ 24 colours, hard pixels, forms read (not a blob). **Verify:** side-by-side with the reference.
+- ★ **Checkpoint B:** Bailey: "does the body read right?" (cheap place to change course).
 
-**Checkpoint B:** engine chosen, design written, pipeline proven. Bailey sees the plan in plain words.
+### T4 — Head, face, shorts (slice 3)
+- Hair with a lighter streak, simple readable face (eyes, brows, nose, mouth), ears, navy shorts, bare feet.
+- **Accept:** face readable at 1x and at 8x; no orphan pixels. **Verify:** side-by-side + a 1x crop.
 
-### Stage 3 — Prototype (internal greybox)
-- **3.1 Movement and camera path** — walk / sprint / dodge-roll, third-person spring-arm camera, V switches camera.
-  Accept: feels responsive; camera never clips through walls.
-- **3.2 Quirk path** — one Quirk (e.g. Combustion Sweat): use it → damage → heat meter rises → overheat hurts the player.
-  Accept: the body-cost loop works end to end.
-- **3.3 Fight path** — one enemy, melee + Quirk, hit-stop, dodge.
-  Accept: no auto-combo; stun has diminishing returns (PDF 4.3).
-- **3.4 Law path** — using a Quirk in view of a camera raises the collateral / law meter.
-- **3.5 Fun test** — team plays it, writes what is fun and what is not.
-  Accept: written verdict; anything not fun is fixed or cut.
+### T5 — Outline and polish (slice 4)
+- Dark outline, selective inner lines, gold spawn ring under the feet, optional flat dusk background to compare.
+- **Accept:** full Checker passes (all rules). **Verify:** Checker output + final side-by-side, big and clear.
+- ★ **CHECKPOINT C (decision):** Bailey judges the hero card. Yes → T6. No → change the method (see risks).
 
-**Checkpoint C:** core loop is fun. Bailey gets a written summary only — no greybox images.
+### T6 — Split into layers (only after C = yes)
+- Separate files: body, hair, shorts, outline; recombine to the same picture.
+- **Accept:** recombined image is pixel-identical to the card. **Verify:** automatic diff = 0 differing pixels.
 
-### Stage 4 — Vertical slice (Bailey sees this)
-- **4.1 Slice scope** — one Musutafu street at golden hour, the player's original hero, one Quirk, one fight, one rescue.
-- **4.2 Base body** — anatomically correct, bald, underwear, locked (rule 7).
-- **4.3 Hero costume** — the six gear slots, layered on the base body.
-- **4.4 Street art** — real PBR models only; nothing blocky.
-- **4.5 Lighting and look** — cel shading + thick ink lines + 3D onomatopoeia (PDF section 3).
-- **4.6 HUD** — clean comic-panel HUD near the character (PDF 3.3).
-  Accept for every 4.x: passes Checker against reference photos, side by side, 1024px+, every side.
+### T7 — One shirt layer
+- A t-shirt as its own layer over the body. **Accept:** no body pixels poking through, no gaps at the hem/sleeves.
 
-**Checkpoint D:** Bailey judges the slice with his own eyes.
+### T8 — One hair variant
+- A second hairstyle layer swappable with the first. **Accept:** swap works, no leftover pixels of the old hair.
+- ★ **Checkpoint D:** Bailey decides what comes next (walk frames, an outfit, the street).
 
-### Stages 5–8 (planned in detail after Checkpoint D)
-- **5 Production** — all districts, all three paths, all systems, sound.
-- **6 Alpha** — feature freeze.
-- **7 Beta** — bug fixing and polish only.
-- **8 Gold** — final build, then patches.
+## Risks and fallbacks
+| Risk | Fallback |
+|---|---|
+| Hand-placed pixels can't reach the reference's detail | Lower detail (48x72), or Bailey touches it up in LibreSprite (free), or try 3D-to-pixel again as a last option |
+| Proportions drift from the reference | Overlay check in T2; fix before shading |
+| Bailey is overwhelmed by many pictures | One picture per checkpoint, big and clear, short message |
 
-## Blockers right now
-1. Bailey's yes on the one-sentence idea (1.1).
-2. Engine choice (2.1).
-3. No 3D models exist yet — art steps stop until real models are made.
+## Not in this plan
+Walking frames, enemies, maps, the city, Blender or any 3D, AI image generators, the engine choice.
