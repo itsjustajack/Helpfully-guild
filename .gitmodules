@@ -49,3 +49,6 @@
 [submodule "third_party/crucible"]
 	path = third_party/crucible
 	url = https://github.com/codepawl/crucible.git
+[submodule "third_party/TripoSR"]
+	path = third_party/TripoSR
+	url = https://github.com/VAST-AI-Research/TripoSR.git

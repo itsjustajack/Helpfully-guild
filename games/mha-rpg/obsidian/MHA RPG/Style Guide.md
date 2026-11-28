@@ -37,3 +37,11 @@ Source: his HD-2D note ("tattoos" in it was a voice-to-text slip for "photos", m
 4. **Distinct pixel clusters.** Group pixels into readable clumps (leaves, bricks, windows), not noise.
 Test rule: try a new detail on minimal clothing / a plain body first, then add complex gear.
 Palette is no longer strictly limited (Bailey: break that rule if something else helps).
+
+
+## Gritty city rules (Bailey, 2026-11-28)
+1. **Verticality:** varied building heights (2 to 6 floors), stepped rooflines, rooftop clutter, water towers, scaffolding, fire escapes.
+2. **Narrow alleys with dramatic shadow:** tall buildings cast long dark shadows into alleys and onto sidewalks.
+3. **Grimy palette:** desaturated, slightly darker building colours; weathered brick; grime streaks under windows and cornices, mold patches near the ground, peeling-paint flecks.
+4. **Localized lighting:** neon signs with coloured light pools on the ground, warm lamp pools, steam vents; the rest of the street stays moody and dark so lights read.
+5. Keep the four HD-2D rules (clean lines, sharp silhouette, flat shading, distinct clusters).
