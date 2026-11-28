@@ -1,5 +1,7 @@
 # Plan: Pixel Hero Card, then Layers
 
+> **UPDATE 2026-11-28:** Bailey wants the characters EXACTLY as in his sheet, unchanged. My own drawn card (T2 on) is parked. The 16 sheet characters are saved pixel-exact in `games/style-guide/characters/`. The plan below is kept for reference.
+
 Spec: Obsidian note "Pixel Hero Plan" (direction C, chosen by Bailey) + `games/style-guide/STYLE_GUIDE.md`.
 Supersedes the old 3D plan (those files were removed; restore point git `c24715c`).
 Rules from Bailey that apply: nothing reaches him until the Checker passes; judge side by side with the

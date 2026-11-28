@@ -10,6 +10,10 @@ summary: "Pixel hero card first, then layers: Bailey picked direction C"
 
 # Pixel Hero Plan (Pixel Hero Card, then Layers)
 
+> **Update 2026-11-28 (Bailey):** the characters must look **exactly** as in his character sheet. Nothing is redrawn or changed.
+> The 16 characters (8 bodies, bare and in costume) are saved pixel-exact in the repo (`games/style-guide/characters/`, 0 differing pixels).
+> My own hand-drawn hero card is parked. Grid size 128x192 and the palette check were done before this change.
+
 *From the idea-refine session. Decided by Bailey.*
 
 ## Problem Statement

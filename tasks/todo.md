@@ -1,5 +1,10 @@
 # To-do — Pixel Hero Card
 
+> **CHANGE (Bailey, 2026-11-28): the characters must look EXACTLY as in his sheet. Do not redraw or change them.**
+> The 16 characters (8 bodies, bare and in costume) are cut out pixel-exact in `games/style-guide/characters/`
+> (0 differing pixels). My own hand-drawn hero card (T2 onward) is **parked**; the files stay in `games/pixel-hero/card/`.
+> Next for characters: use these as the base-body and costume layers (no edits without Bailey's yes).
+
 See `tasks/plan.md` for acceptance criteria and verification. Obsidian: "MHA RPG - To-do" mirrors this.
 
 ## Phase 1 — Hero card
