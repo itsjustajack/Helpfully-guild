@@ -58,10 +58,20 @@ for x in range(W):
             if 2.3<=fh<2.9: c=hx("#d8434f") if (bi+int(z/5))%2 else hx("#3fa7a3")
         else:
             if fh>2.85: c=lerp(base,(255,225,170),.25)
-            elif 0.7<fh<2.5 and 0.5<wz<1.9:
+            elif 0.62<fh<2.58 and 0.42<wz<2.02:
+                inner=0.75<fh<2.45 and 0.55<wz<1.9
                 lit_w=((bi*7+fl*13+int(z/2.6)*5)%10)<3
-                c=LIT if lit_w else (GLASS if fh>2.2 else NAVY)
-            elif z<14 and int(h*2.5)%2==0: c=lerp(base,(0,0,0),.10)
+                if not inner: c=lerp(base,(255,225,190),.45)            # frame
+                elif abs(wz-1.22)<0.05 or abs(fh-1.6)<0.06: c=lerp(base,(255,225,190),.3)  # mullions
+                elif lit_w: c=LIT if fh<1.6 else lerp(LIT,(255,245,200),.5)
+                else:
+                    c=NAVY if fh<1.6 else lerp(NAVY,GLASS,.35)
+                    if (wz*2.2+fh)%1.3<0.18: c=lerp(c,GLASS,.55)           # glass streak
+            elif 0.5<fh<=0.62 and 0.35<wz<2.1: c=lerp(base,(255,225,190),.5)   # sill
+            elif z<32:
+                row=int(h*3.2); off=0.5 if row%2 else 0.0
+                if (h*3.2)%1<0.14 or ((z*1.1+off)%1)<0.1: c=lerp(base,(0,0,0),.28)
+                elif ((row*5+int(z*1.1+off)*3)%7)==0: c=lerp(base,(255,200,160),.12)
         if y==max(0,ytop) or y==ytop+1: c=lerp(base,(255,225,170),.35) if side==1 else lerp(base,(255,200,150),.2)
         px[x,y]=fog(c,z)
     # ground
@@ -82,7 +92,7 @@ for x in range(W):
 # trees, lamps
 G=[hx("#1f4a4e"),hx("#2f7a52"),hx("#4f9a50"),hx("#8cc45c")]
 def tree(side,z):
-    s=F/z; X=side*3.7; sx=VX+X*s; gy=VY+CAMH*s; cy=VY+(CAMH-3.6)*s; r=1.9*s
+    s=F/z; X=side*3.7; sx=VX+X*s; gy=VY+CAMH*s; cy=VY+(CAMH-3.3)*s; r=1.2*s
     for y in range(int(cy),int(gy)):
         for x in range(int(sx-s*0.09),int(sx+s*0.09)+1):
             if 0<=x<W and 0<=y<H: px[x,y]=fog(hx("#4a2f44"),z)
