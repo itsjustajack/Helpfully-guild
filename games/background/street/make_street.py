@@ -52,24 +52,38 @@ layer(hx("#4a3f82"),0,16,52,9,18,True,.2)
 def blocks():
     z=0.4; out=[]; prev=None
     while z<ZEND+8:
-        L=random.uniform(6,12); k=random.choice([c for c in ("brick","orange","blue","red","orange") if c!=prev]); prev=k
-        out.append((z,z+L,random.uniform(17,36),k)); z+=L
+        L=random.uniform(6,11); k=random.choice([c for c in ("brick","orange","blue","red","cream","orange","blue") if c!=prev]); prev=k
+        H=random.uniform(34,44) if z<9 else random.uniform(13,27)
+        out.append((z,z+L,H,k)); z+=L
+        g=random.uniform(1.3,2.2); out.append((z,z+g,30,"alley")); z+=g
     return out
 BL={-1:blocks(),1:blocks()}
-BASE={"brick":(hx("#a8404c"),hx("#7a2f4c")),"orange":(hx("#e0803f"),hx("#b05a46")),"blue":(hx("#6a7ab8"),hx("#46508e")),"red":(hx("#d0453f"),hx("#8e2c4a"))}
+BASE={"cream":(hx("#e0d0b0"),hx("#a09080")),"brick":(hx("#a8404c"),hx("#7a2f4c")),"orange":(hx("#f08a2a"),hx("#c06030")),"blue":(hx("#4a6ad0"),hx("#2f4496")),"red":(hx("#d83030"),hx("#8e2040"))}
 NAVY=hx("#2a2858"); GLASS=hx("#5a5aa0"); LIT=hx("#ffd36b"); CREAM=(255,225,190)
-def fog(c,z): return lerp(c,HORIZON,min(1,(z/ZEND))**1.1*0.45)
+def fog(c,z): return lerp(c,HORIZON,min(1,(z/ZEND))**1.1*0.25)
 for x in range(W):
     dx=x-VX
     if dx==0: dx=0.01
     side=-1 if dx<0 else 1
-    zw=F*4.5/abs(dx)
+    zw=F*5.2/abs(dx)
     if zw<ZEND:
         blk=next((b for b in BL[side] if b[0]<=zw<b[1]),BL[side][-1]); bi=BL[side].index(blk)
-        ytop=int(VY+(CAMH-blk[2])*F/zw); ybot=int(VY+CAMH*F/zw)
-        lit,shd=BASE[blk[3]]; base=lit if side==1 else lerp(shd,(20,10,50),.12)
+        if blk[3]=="alley":
+            z2=F*10.0/abs(dx); yt=int(VY+(CAMH-blk[2])*F/z2); yb=int(VY+CAMH*F/z2)
+            for y in range(max(0,yt),min(H,yb+1)):
+                hh=CAMH-(y-VY)*z2/F
+                c=lerp(hx("#2a2250"),hx("#6a4a80"),min(1,max(0,(hh-4)/20)))
+                if hsh(x//2,y//3)<.05: c=hx("#ffd36b")
+                px[x,y]=fog(c,zw)
+            wb=yb; continue_ground=True
+            ytop=yt; ybot=yb
+        else:
+            ytop=int(VY+(CAMH-blk[2])*F/zw); ybot=int(VY+CAMH*F/zw)
+        if blk[3]=='alley': lit,shd=BASE['brick']
+        else: lit,shd=BASE[blk[3]]
+        base=lit if side==1 else lerp(shd,lit,.35)
         ytop2=max(0,ytop)
-        for y in range(ytop2,min(H,ybot+1)):
+        for y in (range(ytop2,min(H,ybot+1)) if blk[3]!='alley' else []):
             z=zw; h=CAMH-(y-VY)*z/F; fl=int(h//3.4); fh=h%3.4; wz=z%2.7; wi=int(z/2.7)
             c=base
             if fl==0:
@@ -136,7 +150,7 @@ for x in range(W):
             if X<0: c=lerp(c,hx("#3a2f66"),.4)
         px[x,y]=fog(c,z)
 # ---- trees
-G=[hx("#1a3f48"),hx("#27694e"),hx("#3f8f4c"),hx("#6cb45a"),hx("#b4dc72")]
+G=[hx("#1f5a3a"),hx("#2f8a3a"),hx("#4fb83a"),hx("#8ee04a"),hx("#d0f470")]
 def tree(side,z):
     s=F/z; X=side*3.75; sx=VX+X*s; gy=VY+CAMH*s; cy=VY+(CAMH-3.9)*s; rx=1.5*s; ry=1.35*s
     for y in range(int(cy+ry*.2),int(gy)):
@@ -144,7 +158,7 @@ def tree(side,z):
     rnd=random.Random(int(z*100)+side)
     for y in range(int(cy-ry),int(cy+ry)+1):                       # dark mass
         for x in range(int(sx-rx),int(sx+rx)+1):
-            if ((x-sx)/rx)**2+((y-cy)/ry)**2<=.92: put(x,y,fog(G[0],z))
+            if ((x-sx)/rx)**2+((y-cy)/ry)**2<=.92: put(x,y,fog(G[1],z))
     pts=[]
     for _ in range(int(60+14*s/6)):
         a=rnd.uniform(0,6.283); d=rnd.random()**.6; pts.append((sx+d*rx*.9*__import__('math').cos(a),cy+d*ry*.88*__import__('math').sin(a)))
@@ -167,7 +181,7 @@ def car(X,z,c):
     for y in range(y0,yb):
         for x in range(x0,x1): put(x,y,fog(c if y>y0+.45*s else hx("#2a2858"),z))
 car(1.5,30,hx("#d8434f")); car(-1.6,38,hx("#e8e0d0"))
-out=im.quantize(48,method=Image.Quantize.MEDIANCUT,dither=Image.Dither.NONE).convert("RGB")
+out=im.quantize(64,method=Image.Quantize.MEDIANCUT,dither=Image.Dither.NONE).convert("RGB")
 out.save("street_dusk_art_256.png"); out.resize((1024,1024),Image.NEAREST).save("street_dusk_x4.png")
 print("colours:",len(out.getcolors(100000)))
 ref=Image.open("../../style-guide/references/ref_city_street.webp").convert("RGB").resize((512,512))
