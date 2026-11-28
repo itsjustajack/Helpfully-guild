@@ -45,3 +45,16 @@ Palette is no longer strictly limited (Bailey: break that rule if something else
 3. **Grimy palette:** desaturated, slightly darker building colours; weathered brick; grime streaks under windows and cornices, mold patches near the ground, peeling-paint flecks.
 4. **Localized lighting:** neon signs with coloured light pools on the ground, warm lamp pools, steam vents; the rest of the street stays moody and dark so lights read.
 5. Keep the four HD-2D rules (clean lines, sharp silhouette, flat shading, distinct clusters).
+
+
+## Isometric rules (from Bailey's isometric guide, 2026-11-28)
+Applies to the isometric city. The top-down map is a reference only.
+1. **Strict 2:1 grid.** Every diagonal steps 2 px across per 1 px down (about 26.57 degrees, not 30). Tile = 64x32 px for detailed city art (32x16 for low detail).
+2. **Three-face shading, light from upper-left.** Top face brightest, left face mid-tone, right face darkest. One light direction for everything, from skyscraper to mailbox.
+3. **Verticals stay vertical.** Height lines are perfectly straight up and down; any slant breaks the projection.
+4. **Hue-shift.** Shadows move toward blue/purple, highlights toward warm yellow. Do not make shades by mixing in plain black or white.
+5. **Seamless ground.** Road and sidewalk textures tile on all sides of the diamond; use transition tiles (curbs, ramps) where surfaces meet so there is no checkerboard.
+6. **Selective outlining.** Inner lines are a darker shade of the object's own colour, not pure black. A dark outer silhouette is fine.
+7. **Depth sorting (painter's algorithm).** Far things first (top of screen), near things on top: ground, then curbs/manholes, then buildings/lamps/signals, then moving things.
+8. **Consistent scale.** One cube = 1 unit. Door about 2 units, traffic light 2.5 to 3. Saturated colour only on small details (signals, signs); big buildings stay desaturated.
+Note: the old iso block had left face darker than right. New work uses left = mid, right = darkest, top = brightest.

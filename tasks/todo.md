@@ -34,3 +34,11 @@ Walking frames, enemies, maps, the city, engine choice.
 ## Approved
 - [x] Isometric HD-2D city block v1 approved by Bailey (2026-11-28). Process in Obsidian: "Approved Process - Isometric HD-2D City Block".
 - [ ] Next: skyline, bloom fix, tree variety, more blocks; hero costume test on a separate body copy.
+
+## Isometric city rebuild (plan: skills per step)
+- [x] Step 1 style guide: isometric rules added (2026-11-28)
+- [ ] Step 2 ground + roads at 64x32, one intersection, no buildings (checkpoint)
+- [ ] Step 3 one building, three-face shading
+- [ ] Step 4 block with alleys and varied heights (checkpoint)
+- [ ] Step 5 grit + HD-2D pass
+- [ ] Step 6 close camera at character scale (checkpoint)
