@@ -1,0 +1,22 @@
+{
+ "sky top": "#1d2b59",
+ "sky low": "#efa15b",
+ "far tower": "#3c4c6f",
+ "cloud": "#616679",
+ "building tan lit": "#1f263e",
+ "building tan mid": "#4f4145",
+ "building maroon": "#5e5753",
+ "building maroon right": "#1f2542",
+ "window navy": "#1a1f33",
+ "window light": "#615b59",
+ "shadow side": "#5f4849",
+ "tree green": "#26443f",
+ "tree dark": "#294b42",
+ "road": "#776745",
+ "road light": "#21253a",
+ "crosswalk": "#73778c",
+ "sidewalk": "#73768b",
+ "storefront navy": "#1f2237",
+ "awning pink": "#452537",
+ "ring gold": "#1a1c2d"
+}
