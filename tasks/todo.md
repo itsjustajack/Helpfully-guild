@@ -30,3 +30,7 @@ Walking frames, enemies, maps, the city, engine choice.
 ## Approved
 - [x] Isometric HD-2D city block v1 approved by Bailey (2026-11-28). Process in Obsidian: "Approved Process - Isometric HD-2D City Block".
 - [ ] Next: skyline, bloom fix, tree variety, more blocks; hero costume test on a separate body copy.
+
+## Approved
+- [x] Isometric HD-2D city block v1 approved by Bailey (2026-11-28). Process in Obsidian: "Approved Process - Isometric HD-2D City Block".
+- [ ] Next: skyline, bloom fix, tree variety, more blocks; hero costume test on a separate body copy.
