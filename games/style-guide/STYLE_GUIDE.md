@@ -6,6 +6,7 @@ Everything we make is original and drawn/built by us (no AI image generators, no
 References (saved in `references/`):
 - `ref_hero_on_street.png` — a muscular pixel hero standing on a pixel city street at dusk.
 - `ref_city_street.webp` — a daytime pixel city street in strong one-point perspective.
+- `ref_painted_iso_room.jpg` — a painted, moody isometric cutaway room with two characters (the "records office" picture).
 
 ## What the pictures show
 
@@ -22,6 +23,19 @@ References (saved in `references/`):
 - Dithering (checker patterns) for sky gradients and soft shadows.
 - Dusk version: blue-purple, dark vignette at the edges, warm skin as the accent.
 - Day version: saturated orange / red / blue buildings, cyan sky, white pixel clouds, yellow centre line.
+
+## Third reference: the painted isometric room (ref_painted_iso_room)
+This one is a painted illustration, not pixel art. It sets the mood for interiors and for any "painted" scenes.
+- **Cutaway diorama:** high isometric view, two back walls kept, the front walls cut low (brick wall in front).
+- **Dark and moody:** the room is dark; warm pools of light from a desk lamp and a wall lantern; cool light from a window.
+- **Dense props:** shelves full of archive boxes, papers on the desk, books, a plant, a notice board, framed pictures, a rug.
+- **Same style for people and room:** the characters are painted exactly like the room (same brushwork, same lighting), never a different style pasted in.
+- **Characters seen from above and behind:** a man in a dark coat with a satchel, a woman with auburn hair in a vest, both facing the desk; hair and shoulders read clearly.
+- **Materials look painted:** worn wood, brick, plaster, paper. Warm browns and ambers against deep shadow, one teal/green accent (the lamp, the book, the vest).
+- **UI frame:** parchment banner at the top, round cream icon buttons on the left edge (Recent, Archive, Settings) with small icons and labels.
+
+## Which look is used where (Bailey decides)
+The pixel pictures and the painted room are two different looks. Until Bailey says otherwise: pixel street and pixel hero = the pixel game; painted room = interiors and mood. The one rule above all: **inside one picture, everything shares one style.**
 
 ## Rules we follow (every artist and every tool)
 1. **One pixel grid.** Character and background share the same pixel size. Never mix resolutions.
