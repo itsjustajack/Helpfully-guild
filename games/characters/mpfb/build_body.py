@@ -1,6 +1,6 @@
 """Build a male body mesh from MPFB's CC0 base mesh + shape adjustments ("targets"). Plain Python.
 
-    python3 -I games/characters/mpfb/build_body.py [muscle 0..1] [height_m]
+    python3 -I games/characters/mpfb/build_body.py [muscle 0..1] [height_m] [shoulder_narrowing 0..0.3]
 Writes mpfb_male_body.obj next to this file: body only (helper geometry removed), in Blender
 coordinates (Z up, faces -Y), in metres, feet on the floor, with UVs.
 """
@@ -11,7 +11,7 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 D = os.path.join(HERE, "data")
-MUSCLE = float(sys.argv[1]) if len(sys.argv) > 1 else 0.55
+MUSCLE = float(sys.argv[1]) if len(sys.argv) > 1 else 0.40
 HEIGHT = float(sys.argv[2]) if len(sys.argv) > 2 else 1.78
 BODY_VERTS = 13380                  # vertices 0..13379 are the body; the rest is helper geometry
 
@@ -54,6 +54,22 @@ body = verts[:BODY_VERTS]
 miny = min(v[1] for v in body)
 maxy = max(v[1] for v in body)
 scale = HEIGHT / (maxy - miny)
+
+
+def shoulder_width():
+    """Width across the shoulders (outer edges at deltoid height), in metres."""
+    ys = miny + (maxy - miny) * 0.815
+    xs = [v[0] for v in body if abs(v[1] - ys) < (maxy - miny) * 0.012]
+    return (max(xs) - min(xs)) * scale
+
+
+SHOULDER = float(sys.argv[3]) if len(sys.argv) > 3 else 0.14      # how much to narrow the shoulders (0 = none)
+before = shoulder_width()
+H = maxy - miny
+for v in verts:                    # smooth narrowing, strongest at shoulder height, fading to chest and arms
+    w = max(0.0, 1.0 - abs((v[1] - miny) / H - 0.815) / 0.17)
+    v[0] *= 1.0 - SHOULDER * w * w * (3 - 2 * w)
+print(f"shoulder width: {before:.3f} m -> {shoulder_width():.3f} m  (narrowing {SHOULDER})")
 out = os.path.join(HERE, "mpfb_male_body.obj")
 with open(out, "w") as f:
     f.write("# MPFB CC0 base mesh, male body only\n")
