@@ -80,7 +80,8 @@ with open(out, "w") as f:
     kept = 0
     for fc in faces:
         if all(0 < vi <= BODY_VERTS for vi, _ in fc):
-            f.write("f " + " ".join(f"{vi}/{ti}" for vi, ti in fc) + "\n")
+            # the axis flip above is a mirror, so reverse each face to keep the normals pointing OUT
+            f.write("f " + " ".join(f"{vi}/{ti}" for vi, ti in reversed(fc)) + "\n")
             kept += 1
 print(f"wrote {out}: {BODY_VERTS} verts, {kept} faces, height {HEIGHT} m, muscle {MUSCLE}")
 
@@ -99,7 +100,16 @@ for key in ("helper-l-eye", "helper-r-eye"):
 json.dump(eyes, open(os.path.join(HERE, "eye_positions.json"), "w"))
 print("eyes:", eyes)
 
-# sanity: the nose tip (most forward head vertex) must end up at the most negative Y (front = -Y)
-head = [i for i in range(BODY_VERTS) if verts[i][1] > (miny + (maxy - miny) * 0.9)]
-nose = max(head, key=lambda i: verts[i][2])
-print("nose tip y in file:", round(verts[nose][2] * scale, 3), "(should be the head's most negative-Y point after import)")
+# sanity: face normals must point out of the body (checked at the top of the head)
+tops = [fc for fc in faces if all(0 < vi <= BODY_VERTS for vi, _ in fc)]
+top = max(tops, key=lambda fc: sum(verts[vi - 1][1] for vi, _ in fc))
+(a_, b_, c_) = [verts[vi - 1] for vi, _ in reversed(top)][:3]
+ux, uy, uz = (b_[0] - a_[0], b_[1] - a_[1], b_[2] - a_[2])
+vx, vy, vz = (c_[0] - a_[0], c_[1] - a_[1], c_[2] - a_[2])
+# normal in file coords (x, y_file=z_mh, z_file=y_mh): cross of the written (reversed) winding
+P = lambda p: (p[0], p[2], p[1])
+pa, pb, pc = P(a_), P(b_), P(c_)
+n = ((pb[1]-pa[1])*(pc[2]-pa[2])-(pb[2]-pa[2])*(pc[1]-pa[1]),
+     (pb[2]-pa[2])*(pc[0]-pa[0])-(pb[0]-pa[0])*(pc[2]-pa[2]),
+     (pb[0]-pa[0])*(pc[1]-pa[1])-(pb[1]-pa[1])*(pc[0]-pa[0]))
+print("top-of-head face normal z (must be > 0):", "OK" if n[2] > 0 else "WRONG", round(n[2], 6))
