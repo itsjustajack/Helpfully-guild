@@ -1,0 +1,31 @@
+{
+ "source": "ref_hero_on_street.png",
+ "colours": 20,
+ "ramps": {
+  "skin": [
+   "#d1783c",
+   "#db7f41",
+   "#de8243",
+   "#e18948",
+   "#e7914d",
+   "#eb9e50",
+   "#f6a75f",
+   "#fcac62",
+   "#fdae64",
+   "#fdaf65",
+   "#feaf65",
+   "#fdb166",
+   "#feb066",
+   "#feb56a"
+  ],
+  "hair_shorts_dark": [
+   "#0f0e15",
+   "#242940",
+   "#282c45",
+   "#292d46",
+   "#292d47",
+   "#2a2f48"
+  ],
+  "other": []
+ }
+}

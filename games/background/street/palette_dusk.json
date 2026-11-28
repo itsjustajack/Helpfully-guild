@@ -1,0 +1,21 @@
+{
+ "sky top (violet)": "#4a3f7a",
+ "sky 2": "#7a4f8f",
+ "sky 3": "#b4577f",
+ "sky 4 (orange-pink)": "#e57a6a",
+ "horizon (warm)": "#ffb36b",
+ "far hills": "#6a5a96",
+ "far hills light": "#8c6fa0",
+ "building lit": "#d9a07a",
+ "building mid": "#a8667a",
+ "building shadow": "#5b4670",
+ "building dark": "#34294f",
+ "road": "#3b3354",
+ "road light": "#58496a",
+ "outline": "#1d1832",
+ "window light": "#ffd96b",
+ "sign red": "#d9434f",
+ "sign teal": "#3fa7a3",
+ "tree green": "#3f7a5e",
+ "rim light": "#ffe0a8"
+}

@@ -1,0 +1,23 @@
+# MHA's city look is mostly unsourced, so we build from the references you gave
+
+**Bottom line.** Musutafu is a fictional Japanese city (fans place it in Shizuoka Prefecture), and U.A. High is a large campus on a hill above it. Beyond that, no source I could reach describes the streets, building shapes or dusk lighting of the anime. No databook, no staff interview and no wiki page text was readable from this session (the wiki host is blocked). **Confidence: low on visual detail, medium on setting facts.** The best guide for the street is therefore your own pictures (`ref_hero_on_street.png`, `ref_city_street.webp`), plus ordinary Japanese street features, which I mark as my estimate.
+
+## What is actually known about Musutafu and U.A.
+Musutafu is fictional and most of the story happens there ([We Got This Covered](https://wegotthiscovered.com/anime/where-does-my-hero-academia-take-place/)). The Shizuoka placement is a **wiki and fan consensus**, not a staff statement; one source adds a Hamamatsu resemblance and another says Tokyo, with weaker evidence ([Sportskeeda](https://sportskeeda.com/anime/my-hero-academia-where-u-a-located), [japananimetourism](https://japananimetourism.pages.dev/series/my-hero-academia/)). No real campus or district is confirmed as a model, so copying one real place is not supported.
+
+U.A. details that are **widely reported**: an entrance security wall nicknamed the "U.A. Barrier"; Heights Alliance dorms (one building per class, five floors, two wings, about five minutes' walk from the main building); the USJ disaster-training dome and Ground/Gym Gamma as separate training areas; and a late-series Flying Fortress upgrade ([CBR](https://www.cbr.com/my-hero-academia-things-never-knew-ua-academy/), [Bounding Into Comics](https://boundingintocomics.com/manga/my-hero-academia-just-massively-upgraded-u-a-high-school), [MHA Wiki: USJ](https://myheroacademia.fandom.com/wiki/U.S.J._Incident)). Main-building shape and materials are **not sourced**.
+
+## The street look is an estimate, not a finding
+Nothing I read describes MHA's street furniture. The usual Japanese commuter-city kit is **estimated**: utility poles with overhead wires, narrow roads with sidewalks, vending machines, small shops with vertical signboards, 2 to 8 storey blocks, zebra crossings, a few street trees. The official game Ultra Rumble describes its U.A. Island stage as medium downtown buildings linked by scaffolding, dense low-rise suburbs with alleys, rooftops and a beach ([Bandai Namco](https://en.bandainamcoent.eu/my-hero-academia/news/my-hero-ultra-rumble-new-stage-ua-island)), which is useful for street composition. Horikoshi's American-comic influence is documented for hero and character design, not for architecture ([ANN](https://www.animenewsnetwork.com/feature/2018-08-24/interview-my-hero-academia-creator-kohei-horikoshi/.135449)).
+
+## Anime backgrounds are clean, and the dusk look must be our own
+Atelier Musa painted the backgrounds, with Shigemi Ikeda as co-art director from season 1 ([ANN](https://www.animenewsnetwork.com/encyclopedia/anime.php?id=17786)). The best-supported style point is negative: fans criticise the mainline anime for a repeated flat blue daytime sky, while the Vigilantes spinoff varies the sky by time of day ([Sportskeeda](https://www.sportskeeda.com/anime/my-hero-academia-vigilantes-fixes-key-controversy-mainline-series), [Know Your Meme](https://knowyourmeme.com/memes/mha-blue-sky-discourse-my-hero-academia-blue-sky-debate)). So for dusk the anime gives little to copy, and your hero picture is the stronger guide. Keep backgrounds calmer than the characters so the hero reads first (**estimated**).
+
+## Pixel translation (my recommendation, estimated)
+General pixel craft applies: distant objects lighter and less saturated, foreground darker and richer ([Clip Studio Tips](https://tips.clip-studio.com/en-us/articles/7656)); ramps with hue shifts; dithering only where it helps ([Divoom](https://divoom.com/blogs/setup-ideas/pixel-art-dithering-when-to-use-and-stop)). Dusk recipe: sky in 4 to 6 banded steps (warm orange at the horizon to desaturated violet), shadows shifted cool, a warm rim on building edges, small yellow window lights.
+
+## Key uncertainties
+Exact building shapes, signage, skyline and dusk palette of the anime are unknown from sources. Settling it needs screenshots or manga panels (Bailey can paste a few), or the wiki host allowed.
+
+## Conclusion
+Treat "MHA look" as: a Shizuoka-style Japanese town street, a big hilltop U.A. in the distance, and the colour mood of Bailey's hero picture. Everything visual here is a design choice, and Bailey has the final say.
