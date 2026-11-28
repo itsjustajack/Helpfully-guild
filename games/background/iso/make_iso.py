@@ -14,6 +14,22 @@ for y in range(H):
     k=min(STEPS-1,int(y/ (H*0.78) *STEPS))
     for x in range(W): px[x,y]=skycol(k)
 rs=random.Random(5)
+def blob(cx,cy,r,col):
+    for yy in range(int(cy-r),int(cy+r)+1):
+        for xx in range(int(cx-r),int(cx+r)+1):
+            if (xx-cx)**2+(yy-cy)**2<=r*r and 0<=xx<W and 0<=yy<H: px[xx,yy]=col
+rs2=random.Random(21)
+for _ in range(46):                                   # stars: distinct pixel clusters in the upper sky
+    x,y=rs2.randint(0,W-1),rs2.randint(0,95); c=hx("#ffe9c8") if rs2.random()<.4 else hx("#c9b8f0")
+    px[x,y]=c
+    if rs2.random()<.18:
+        for dx,dy in ((1,0),(-1,0),(0,1),(0,-1)):
+            if 0<=x+dx<W and 0<=y+dy<H: px[x+dx,y+dy]=lerp(c,SKY[1],.5)
+CLS=[hx("#7a4590"),hx("#d9708e"),hx("#ffc7a0")]
+for cx,cy,n in ((70,70,7),(300,58,8),(210,28,6)):      # clouds: flat 3-tone clumps
+    bl=[(cx+rs2.randint(-26,26),cy+rs2.randint(-5,5),rs2.randint(7,12)) for _ in range(n)]
+    for k,(dx,dy,sh) in enumerate(((0,0,0),(-2,-3,2),(-4,-6,4))):
+        for bx,by,r in bl: blob(bx+dx,by+dy,max(3,r-sh),CLS[k])
 # far skyline: two flat layers with a few lit windows (hard shapes, no dither)
 def skyline(base,hmin,hmax,col,win,seed):
     r=random.Random(seed); x=-6
@@ -145,13 +161,61 @@ def lamp(gx,gy):
     for dx in range(-2,3):
         for dy in range(-2,3):
             if abs(dx)+abs(dy)<=3: put(sx+dx,sy-47+dy,hx("#ffe0a8"))
+def box(bx0,bx1,by0,by1,z0,z1,lit,shd,top,glass=False,head=None):
+    xc,yc=scr(bx1,by1)
+    for face in (0,1):
+        L=int(round(((bx1-bx0) if face==0 else (by1-by0))*16))
+        for i in range(L):
+            sx=xc-1-i if face==0 else xc+i; yb=yc-z0-i//2
+            for v in range(z1-z0):
+                c=shd if face==0 else lit
+                if glass and 1<v<z1-z0-1 and 2<i<L-3:
+                    c=hx("#2a2858") if (i+v)%7 else hx("#5a5aa0")
+                if v==z1-z0-1: c=lerp(c,(255,235,200),.2)
+                if v<1: c=lerp(c,(0,0,0),.35)
+                put(sx,yb-v-1,c)
+            if head and ((head=="R" and face==1) or (head=="L" and face==0)) and (i<2 or i>=L-2) and 1<=z1-z0:
+                put(sx,yc-z0-i//2-3,hx("#ffe0a8")); put(sx,yc-z0-i//2-4,hx("#ffe0a8"))
+            if head and ((head=="L" and face==1) or (head=="R" and face==0)) and (i<2 or i>=L-2):
+                put(sx,yc-z0-i//2-3,hx("#e03030"))
+    pts=[scr(bx0,by0,z1),scr(bx1,by0,z1),scr(bx1,by1,z1),scr(bx0,by1,z1)]
+    for y in range(min(p[1] for p in pts),max(p[1] for p in pts)+1):
+        for x in range(min(p[0] for p in pts),max(p[0] for p in pts)+1):
+            gx,gy=inv(x+.5,y+.5+z1)
+            if bx0<=gx<bx1 and by0<=gy<by1: put(x,y,top)
+def car(cx,cy,axis,col,head):
+    ln,wd=(0.75,0.3) if axis=="x" else (0.3,0.75)
+    lit,shd=col,lerp(col,(20,10,50),.4); top=lerp(col,(255,235,200),.15)
+    box(cx-ln,cx+ln,cy-wd,cy+wd,0,6,lit,shd,top,False,head)
+    k=0.55
+    box(cx-ln*k*0.9,cx+ln*k*0.9,cy-wd*.8,cy+wd*.8,6,11,lerp(col,(255,255,255),.1),lerp(shd,col,.3),lerp(col,(255,235,200),.25),True)
+def ped(gx,gy,col,seed):
+    sx,sy=scr(gx,gy)
+    for dx in range(-3,4):
+        for dy in range(-1,2): 
+            if abs(dx)+abs(dy)*2<=3: put(sx+dx,sy+dy,hx("#1d1a3a"))
+    r=random.Random(seed); skin=[hx("#e8b890"),hx("#c88a60"),hx("#f0c8a0")][seed%3]; hair=[hx("#2a1a20"),hx("#5a3a20"),hx("#c8a040")][seed%3]
+    for y in range(sy-4,sy): put(sx-1,y,hx("#2a2858")); put(sx,y,hx("#2a2858"))
+    for y in range(sy-10,sy-4):
+        for x in range(sx-2,sx+2): put(x,y,col if x<sx else lerp(col,(255,255,255),.2))
+    put(sx-2,sy-9,col); put(sx+1,sy-9,col)
+    for y in range(sy-13,sy-10):
+        for x in range(sx-1,sx+1): put(x,y,skin)
+    for x in range(sx-1,sx+1): put(x,sy-14,hair)
+    put(sx-2,sy-13,hair)
 objs=[("b",BUILD[0],4),("b",BUILD[1],12)]
 for gx,gy in ((4.5,2.2),(7.5,2.2),(4.5,9.3),(7.5,9.3),(1.4,4.5),(9.8,4.6)): objs.append(("t",(gx,gy),gx+gy))
 for gx,gy in ((4.5,4.5),(7.5,4.5),(4.5,7.5),(7.5,7.5)): objs.append(("l",(gx,gy),gx+gy+.1))
+for cx,cy,ax,col,hd in ((2.5,6.5,"x",hx("#d8434f"),"L"),(9.6,5.5,"x",hx("#e8e0d0"),"R"),(5.5,9.6,"y",hx("#3fa7a3"),"L"),(6.5,2.4,"y",hx("#e0a03f"),"R")):
+    objs.append(("c",(cx,cy,ax,col,hd),cx+cy))
+for i,(gx,gy,col) in enumerate(((2.0,4.55,hx("#d8434f")),(2.5,4.6,hx("#3fa7a3")),(9.2,4.55,hx("#e0a03f")),(9.7,4.6,hx("#d8434f")),(2.6,8.6,hx("#3fa7a3")),(3.1,8.45,hx("#e8e0d0")),(8.5,8.7,hx("#4a6ad0")))):
+    objs.append(("p",(gx,gy,col,i),gx+gy))
 objs.sort(key=lambda o:o[2])
 for k,(kind,a,_) in enumerate(objs):
     if kind=="b": building(*a)
     elif kind=="t": tree(a[0],a[1],k)
+    elif kind=="c": car(*a)
+    elif kind=="p": ped(*a)
     else: lamp(*a)
 art=im; art.save("iso_block_art.png")
 S=3; big=art.resize((W*S,H*S),Image.NEAREST); big.save("iso_block_x3.png")
