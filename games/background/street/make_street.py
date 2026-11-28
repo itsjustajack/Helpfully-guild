@@ -33,14 +33,15 @@ for x0,w,h,c in ((92,22,98,"#6a5a9a"),(138,24,84,"#7a62a0"),(114,12,60,"#8a6aa0"
             px[x,y]=lerp(c,hx("#ffd890"),0.55) if wnd and random.random()<0.35 else (lerp(c,(0,0,0),.12) if wnd else c)
 # facade blocks
 def blocks():
-    z=0.4; out=[]
+    z=0.4; out=[]; prev=None
     while z<70:
-        L=random.uniform(6,13); out.append((z,z+L,random.uniform(13,30),random.choice(("brick","orange","blue","brick")))); z+=L
+        L=random.uniform(6,13); k=random.choice([c for c in ("brick","orange","blue","violet","red") if c!=prev]); prev=k
+        out.append((z,z+L,random.uniform(13,32),k)); z+=L
     return out
 BL={-1:blocks(),1:blocks()}
-BASE={"brick":(hx("#a8404c"),hx("#7a2f4c")),"orange":(hx("#e0803f"),hx("#b05a46")),"blue":(hx("#6a6aa8"),hx("#46467e"))}
+BASE={"brick":(hx("#a8404c"),hx("#7a2f4c")),"orange":(hx("#e0803f"),hx("#b05a46")),"blue":(hx("#6a7ab8"),hx("#46508e")),"violet":(hx("#9a62b0"),hx("#64408a")),"red":(hx("#d0453f"),hx("#8e2c4a"))}
 NAVY=hx("#2a2858"); GLASS=hx("#5a5aa0"); LIT=hx("#ffd36b"); SHOP=hx("#3a2a58")
-def fog(c,z): return lerp(c,HORIZON,min(1,(z/75.0))**0.9*0.40)
+def fog(c,z): return lerp(c,HORIZON,min(1,(z/75.0))**0.9*0.30)
 for x in range(W):
     dx=x-VX
     if dx==0: dx=0.01
@@ -48,14 +49,17 @@ for x in range(W):
     z=F*4.5/abs(dx)
     blk=next((b for b in BL[side] if b[0]<=z<b[1]),BL[side][-1]); bi=BL[side].index(blk)
     ytop=int(VY+(CAMH-blk[2])*F/z); ybot=int(VY+CAMH*F/z)
-    lit,shd=BASE[blk[3]]; base=lit if side==1 else shd
+    lit,shd=BASE[blk[3]]; base=lit if side==1 else lerp(shd,(20,10,50),.15)
     for y in range(max(0,ytop),min(H,ybot+1)):
         h=CAMH-(y-VY)*z/F; fl=int(h//3.2); fh=h%3.2; wz=z%2.6
         c=base
         if fl==0:
-            c=lerp(base,SHOP,.55)
-            if 0.5<fh<2.3 and 0.4<wz<2.2: c=lerp(GLASS,LIT,.5) if (bi+int(z/2.6))%3==0 else lerp(NAVY,GLASS,.3)
-            if 2.3<=fh<2.9: c=hx("#d8434f") if (bi+int(z/5))%2 else hx("#3fa7a3")
+            c=lerp(base,SHOP,.5)
+            if 0.4<fh<1.95 and 0.4<wz<2.2: c=lerp(GLASS,LIT,.55) if (bi+int(z/2.6))%3==0 else lerp(NAVY,GLASS,.3)
+            elif 1.95<=fh<2.35: c=(hx("#e8e0d0") if int(z*2)%2 else hx("#d8434f"))          # awning stripes
+            elif 2.35<=fh<2.95:
+                sg=hx("#d8434f") if (bi+int(z/5))%2 else hx("#3fa7a3")
+                c=lerp(sg,(255,240,230),.7) if int(z*4)%2==0 and int(fh*7)%2==0 and 0.2<wz<2.4 else sg   # sign letters
         else:
             if fh>2.85: c=lerp(base,(255,225,170),.25)
             elif 0.62<fh<2.58 and 0.42<wz<2.02:
