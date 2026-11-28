@@ -35,7 +35,7 @@ for x0,w,h,c in ((92,22,98,"#6a5a9a"),(138,24,84,"#7a62a0"),(114,12,60,"#8a6aa0"
 def blocks():
     z=0.4; out=[]; prev=None
     while z<70:
-        L=random.uniform(6,13); k=random.choice([c for c in ("brick","orange","blue","violet","red") if c!=prev]); prev=k
+        L=random.uniform(6,13); k=random.choice([c for c in ("brick","orange","blue","red","orange") if c!=prev]); prev=k
         out.append((z,z+L,random.uniform(13,32),k)); z+=L
     return out
 BL={-1:blocks(),1:blocks()}
@@ -120,7 +120,7 @@ def car(X,z,c):
         for x in range(x0,x1):
             if 0<=x<W and 0<=y<H: px[x,y]=fog(c if y>y0+.45*s else hx("#2a2858"),z)
 car(1.5,34,hx("#d8434f")); car(-1.6,46,hx("#e8e0d0"))
-out=im.quantize(32,method=Image.Quantize.MEDIANCUT,dither=Image.Dither.NONE).convert("RGB")
+out=im.quantize(48,method=Image.Quantize.MEDIANCUT,dither=Image.Dither.NONE).convert("RGB")
 out.save("street_dusk_art_256.png"); out.resize((1024,1024),Image.NEAREST).save("street_dusk_x4.png")
 print("colours:",len(out.getcolors(100000)))
 ref=Image.open("../../style-guide/references/ref_city_street.webp").convert("RGB").resize((512,512))
