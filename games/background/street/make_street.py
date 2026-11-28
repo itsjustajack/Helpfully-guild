@@ -54,12 +54,21 @@ for x in range(W):
         h=CAMH-(y-VY)*z/F; fl=int(h//3.2); fh=h%3.2; wz=z%2.6
         c=base
         if fl==0:
-            c=lerp(base,SHOP,.5)
-            if 0.4<fh<1.95 and 0.4<wz<2.2: c=lerp(GLASS,LIT,.55) if (bi+int(z/2.6))%3==0 else lerp(NAVY,GLASS,.3)
-            elif 1.95<=fh<2.35: c=(hx("#e8e0d0") if int(z*2)%2 else hx("#d8434f"))          # awning stripes
-            elif 2.35<=fh<2.95:
-                sg=hx("#d8434f") if (bi+int(z/5))%2 else hx("#3fa7a3")
-                c=lerp(sg,(255,240,230),.7) if int(z*4)%2==0 and int(fh*7)%2==0 and 0.2<wz<2.4 else sg   # sign letters
+            ac=[(hx("#d8434f"),hx("#f0d8c8")),(hx("#3fa7a3"),hx("#e0f0e8")),(hx("#e0a03f"),hx("#f8e8c0"))][(bi+int(z/9))%3]
+            sg=[hx("#7a2f4c"),hx("#1f3f6a"),hx("#2f5a4a")][(bi+int(z/9))%3]
+            c=lerp(base,(10,5,30),.55)                                       # shop wall (dark pier)
+            sx=z%4.2                                                          # one shop unit = 4.2 deep
+            if 2.45<=fh<3.0:                                                  # sign band + lettering
+                c=sg
+                if 0.5<sx<3.7 and int(fh*9)%3!=0 and int(z*5)%3!=0 and (int(z*5)+int(fh*9))%2==0: c=hx("#f5e6c8")
+            elif 2.0<=fh<2.45:                                                # awning, wide stripes
+                c=ac[0] if int(z*0.9)%2==0 else ac[1]
+                if fh<2.1: c=lerp(c,(10,5,30),.45)                            # shaded lower edge
+            elif 0.15<fh<2.0 and 0.35<sx<3.85:
+                if 2.7<sx<3.6 and fh<1.9: c=lerp(hx("#2a2040"),LIT,.35)       # door with lit glass
+                elif abs(sx-2.65)<0.05 or abs(sx-0.35)<0.05 or fh<0.3: c=lerp(base,(255,225,190),.3)  # frame
+                else: c=lerp(GLASS,LIT,.55) if (bi+int(z/4.2))%2==0 else lerp(NAVY,GLASS,.35)
+                if (0.7<fh<1.9) and (sx*2+fh)%1.4<0.16 and c!=LIT: c=lerp(c,(255,255,255),.15)
         else:
             if fh>2.85: c=lerp(base,(255,225,170),.25)
             elif 0.62<fh<2.58 and 0.42<wz<2.02:
