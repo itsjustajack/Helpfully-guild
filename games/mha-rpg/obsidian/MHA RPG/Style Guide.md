@@ -12,7 +12,7 @@ summary: "Pixel style rules and Bailey's three reference pictures"
 
 Full text and the three reference pictures live in the repo: `games/style-guide/STYLE_GUIDE.md` and `games/style-guide/references/`.
 
-**References:** a muscular pixel hero on a dusk street · a daytime pixel city street · the painted isometric records office.
+**References:** a muscular pixel hero on a dusk street · a daytime pixel city street · the painted isometric records office · **a character-creator sheet: 8 body types, bare and in costume** (the layering target: base body, then hair and costume on top, fitted per body).
 
 **Rules in short**
 1. One pixel grid: character and background share the same pixel size.

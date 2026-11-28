@@ -7,6 +7,7 @@ References (saved in `references/`):
 - `ref_hero_on_street.png` — a muscular pixel hero standing on a pixel city street at dusk.
 - `ref_city_street.webp` — a daytime pixel city street in strong one-point perspective.
 - `ref_painted_iso_room.jpg` — a painted, moody isometric cutaway room with two characters (the "records office" picture).
+- `ref_character_creator_sheet.png` — a sheet of 8 pixel body types, bare (top row) and in costume with hair (bottom row).
 
 ## What the pictures show
 
@@ -33,6 +34,16 @@ This one is a painted illustration, not pixel art. It sets the mood for interior
 - **Characters seen from above and behind:** a man in a dark coat with a satchel, a woman with auburn hair in a vest, both facing the desk; hair and shoulders read clearly.
 - **Materials look painted:** worn wood, brick, plaster, paper. Warm browns and ambers against deep shadow, one teal/green accent (the lamp, the book, the vest).
 - **UI frame:** parchment banner at the top, round cream icon buttons on the left edge (Recent, Archive, Settings) with small icons and labels.
+
+## Fourth reference: the character-creator sheet (ref_character_creator_sheet)
+This shows the **system** we are building toward, in the same pixel style as the hero-on-the-street picture.
+- **8 body presets:** male and female, each skinny / slim / athletic / heavy. Same front view, same pose, same street, same gold ring.
+- **Two rows:** top = bare base body (bald, plain underwear/shorts/sports top); bottom = the same bodies in a costume with hair.
+- **The base body is its own layer.** Hair and costume are layers on top. The face and head look the same across bodies.
+- **The costume is fitted per body.** It follows each body's shape (broad, narrow, curvy, heavy), it is not one overlay stretched over all of them.
+- **Costume example:** red vest and trousers, blue sleeves and collar, yellow gloves and tall boots, black belt with a buckle and pouches, black swept hair with a lighter streak.
+- **Visible risk in the sheet:** on the heavy bodies the costume has stray lines and small tears at the hips and hands, where the costume layer does not match the body. That is the alignment problem to avoid.
+- **Our hero card is the "Male athletic" preset** (first target); the other presets come only after it works.
 
 ## Which look is used where (Bailey decides)
 The pixel pictures and the painted room are two different looks. Until Bailey says otherwise: pixel street and pixel hero = the pixel game; painted room = interiors and mood. The one rule above all: **inside one picture, everything shares one style.**

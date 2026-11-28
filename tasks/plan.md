@@ -7,7 +7,7 @@ reference, big and clear; never call a poor match good; one step at a time; body
 free tools only; no AI image generators; original art only.
 
 ## Goal and success
-One front-facing MHA-style pixel hero (about 64x96) that Bailey looks at next to
+One front-facing MHA-style pixel hero (about 128x192) that Bailey looks at next to
 `ref_hero_on_street.png` and says "yes, that's it". Then it becomes the body layer.
 
 ## Method (the bet to test)
@@ -39,7 +39,7 @@ Checker first (TDD): `check_card.py` is written before the art and fails until t
 ## Tasks
 
 ### T0 — Checker first (RED)
-- Write `check_card.py`: file exists, size 64x96, transparent background, only hard pixels (alpha 0 or 255),
+- Write `check_card.py`: file exists, size 128x192, transparent background, only hard pixels (alpha 0 or 255),
   palette ≤ 24 colours, no stray single pixels (orphan pixels) inside the figure, outline is continuous
   around the silhouette, left/right balance within tolerance.
 - **Accept:** running it before any art fails with a clear message. **Verify:** run it, see RED.
@@ -52,7 +52,7 @@ Checker first (TDD): `check_card.py` is written before the art and fails until t
 - ★ **Checkpoint A:** Bailey OK on the palette and proportions.
 
 ### T2 — Flat silhouette (slice 1)
-- Hand-place the whole figure in one flat tone per part (skin, hair, shorts) at 64x96, correct pose and proportions.
+- Hand-place the whole figure in one flat tone per part (skin, hair, shorts) at 128x192, correct pose and proportions.
 - **Accept:** Checker passes except shading/outline rules; landmarks within ±3 px of the scaled reference.
 - **Verify:** side-by-side image: reference | my silhouette, enlarged 8x.
 
