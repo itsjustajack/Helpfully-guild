@@ -2,7 +2,7 @@
 title: Underwear Layer
 type: asset
 tags: [mha-rpg/asset]
-status: failed v1
+status: removed
 created: 2026-11-27
 updated: 2026-11-27
 summary: "Base underwear layer; v1 was blocky and failed, redo on the MPFB body"
@@ -17,5 +17,7 @@ preview: ""
 # Underwear Layer
 
 v1 failed (blocky, gaps, poke-through when sitting). Redo on the MPFB body.
+
+> **Removed from the repo** (Bailey's call, 2026-11-28). Restore with git commit `c24715c`.
 
 Back to [[MHA RPG - Home]]

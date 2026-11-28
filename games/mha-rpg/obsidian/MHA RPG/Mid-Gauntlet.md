@@ -2,7 +2,7 @@
 title: Mid-Gauntlet
 type: asset
 tags: [mha-rpg/asset]
-status: approved
+status: removed
 created: 2026-11-27
 updated: 2026-11-27
 summary: "Recoil-damper support gear; Bailey said it looks great"
@@ -19,5 +19,7 @@ preview: "glove_side.png"
 Sleeve, armor shell, rims, straps, six dampers.
 
 ![[glove_side.png]]
+
+> **Removed from the repo** (Bailey's call, 2026-11-28). Restore with git commit `c24715c`.
 
 Back to [[MHA RPG - Home]]

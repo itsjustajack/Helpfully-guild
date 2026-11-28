@@ -22,10 +22,9 @@ summary: "Checklist of the next tasks per stage"
 - [ ] Blender glove test through the pipeline
 - [ ] Timeline with exact dates
 
-## Character (restart)
-- [ ] Install MPFB in Blender
-- [ ] Make base body with MPFB (bald, underwear layer, locked)
-- [ ] Refit [[Hero Glove]] and [[Mid-Gauntlet]] to the new body
-- [ ] Rig ([[Hero Rig]])
+## Pixel hero (current)
+- [ ] Hero card: one front-facing pixel hero, hand-placed on ~64x96, judged against the reference ([[Pixel Hero Plan]])
+- [ ] Bailey judges it side by side
+- [ ] If it works: body layer, then one hair layer and one shirt layer
 
 Back to [[MHA RPG - Home]]

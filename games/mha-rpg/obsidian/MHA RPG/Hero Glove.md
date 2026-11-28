@@ -2,7 +2,7 @@
 title: Hero Glove
 type: asset
 tags: [mha-rpg/asset]
-status: needs retopo
+status: removed
 created: 2026-11-27
 updated: 2026-11-27
 summary: "Glove that fits any hand, with armor knuckle plates; over budget"
@@ -19,5 +19,7 @@ preview: "glove_back.png"
 Fits any hand object; curved armor knuckle plates. Needs retopology to 8k tris.
 
 ![[glove_back.png]]
+
+> **Removed from the repo** (Bailey's call, 2026-11-28). Restore with git commit `c24715c`.
 
 Back to [[MHA RPG - Home]]

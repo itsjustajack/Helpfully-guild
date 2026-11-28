@@ -18,5 +18,7 @@ Check this before similar work.
 - **Measuring bug:** rays at shoulder height ran into the arms. Rule: verify the test before trusting it.
 - **Underwear v1 blocky with gaps.** Rule: never show placeholder-quality clothing; Checker + render first.
 - **Glove was 1.1M triangles.** Rule: check triangle budgets every pass.
+- **Realistic 3D body in a toon shader is not anime.** Hours lost patching parts (clothes, hair, eyes) instead of finding how it is really made. Rule: research how it works before building.
+- **Guessed instead of checking** (Unreal install facts, which pixel repos). Rule: look it up or say it is unverified.
 
 Back to [[MHA RPG - Home]]

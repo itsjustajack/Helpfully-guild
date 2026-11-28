@@ -2,7 +2,7 @@
 title: MHA Hero Tools Add-on
 type: asset
 tags: [mha-rpg/asset]
-status: ready
+status: removed
 created: 2026-11-27
 updated: 2026-11-27
 summary: "Blender add-on with one-click builder buttons"
@@ -17,5 +17,7 @@ preview: ""
 # MHA Hero Tools Add-on
 
 N panel → MHA Hero tab, 5 buttons. 10/10 headless tests.
+
+> **Removed from the repo** (Bailey's call, 2026-11-28). Restore with git commit `c24715c`.
 
 Back to [[MHA RPG - Home]]

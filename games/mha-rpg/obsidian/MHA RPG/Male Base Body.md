@@ -2,7 +2,7 @@
 title: Male Base Body
 type: asset
 tags: [mha-rpg/asset]
-status: superseded
+status: removed
 created: 2026-11-27
 updated: 2026-11-27
 summary: "Script-built male mannequin v8; being replaced by an MPFB body"
@@ -21,5 +21,7 @@ Clean, tested (7/7 checks), but smoother than Bailey's reference. **Restarting w
 ![[v8_front.png]]
 
 ![[v8_threeq.png]]
+
+> **Removed from the repo** (Bailey's call, 2026-11-28). Restore with git commit `c24715c`.
 
 Back to [[MHA RPG - Home]]

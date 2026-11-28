@@ -2,7 +2,7 @@
 title: Hero Rig
 type: asset
 tags: [mha-rpg/asset]
-status: first pass
+status: removed
 created: 2026-11-27
 updated: 2026-11-27
 summary: "Rigify rig on the v8 body, stress-tested; redo on the MPFB body"
@@ -21,5 +21,7 @@ preview: "rig_stress_sitting.png"
 ![[rig_stress_arms_up.png]]
 
 ![[rig_stress_sitting.png]]
+
+> **Removed from the repo** (Bailey's call, 2026-11-28). Restore with git commit `c24715c`.
 
 Back to [[MHA RPG - Home]]

@@ -12,7 +12,7 @@ summary: "Entry point for the My Hero Academia open-world RPG fan project"
 
 Fan project, not for sale. **Idea (draft, needs Bailey's yes):** a Skyrim-style open-world action RPG in a superhero Japan — make your own hero, pick a Quirk that costs your body something real, and be a Hero student, a Villain or a Vigilante.
 
-**Stage:** 2 — Pre-production. Character restarting with MPFB.
+**Stage:** 2 — Pre-production. **Now: pixel hero card first** ([[Pixel Hero Plan]]). The 3D character files were removed.
 
 ## Plan
 - [[MHA RPG - Production Plan]]
@@ -20,12 +20,14 @@ Fan project, not for sale. **Idea (draft, needs Bailey's yes):** a Skyrim-style 
 - [[MHA RPG - Production Brief]]
 - [[MHA RPG - Decisions]]
 - [[MHA RPG - Mistakes Log]]
+- [[Pixel Hero Plan]]
+- [[Style Guide]]
 
 ## Design (summaries of Bailey's PDFs)
 - [[MHA RPG - Design Concept]]
 - [[MHA RPG - Systems Spec]]
 
-## Assets
+## Assets (the 3D ones are marked removed)
 - [[Male Base Body]]
 - [[Hand Base]]
 - [[Mid-Gauntlet]]
