@@ -13,7 +13,7 @@ BAY=[[0,8,2,10],[12,4,14,6],[3,11,1,9],[15,7,13,5]]
 for y in range(H):
     t=min(1,y/VY); pos=t*(len(SKY)-1); i=min(int(pos),len(SKY)-2); fr=pos-i
     for x in range(W):
-        px[x,y]=SKY[i+(1 if fr>BAY[y%4][x%4]/16 else 0)] if y<=VY else HORIZON
+        px[x,y]=SKY[i+(1 if fr>=.5 else 0)] if y<=VY else HORIZON
 def put(x,y,c):
     if 0<=x<W and 0<=y<H: px[x,y]=c
 def disc(cx,cy,r,col):
@@ -138,7 +138,6 @@ for x in range(W):
         X=(x-VX)*z/F; ax=abs(X)
         if ax<3.0:
             c=hx("#3a3a52") if int(z*.8+X*.5)%7 else hx("#42425c")
-            if hsh(x,y)<.06: c=lerp(c,(255,255,255),.06)
             if ax<.08 or .17<ax<.25: c=hx("#f2c14e")
             elif 1.4<ax<1.5 and (z%4)<2: c=hx("#d8d0e0")
             if 3.4<z<5.0 and int((X+3)/.55)%2==0: c=hx("#e2dce8")

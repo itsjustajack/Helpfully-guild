@@ -63,3 +63,13 @@ The pixel pictures and the painted room are two different looks. Until Bailey sa
 ## Estimates (not measured)
 - The art looks about 3-4 screen pixels per art pixel; the hero is about 60% of the picture height.
   Treat these as starting guesses, to be tuned when we compare.
+
+
+## HD-2D rules (Bailey, 2026-11-28)
+Source: his HD-2D note ("tattoos" in it was a voice-to-text slip for "photos", meaning the reference screenshots; no tattoos).
+1. **Clean line work.** Crisp, continuous edges; no fuzzy or broken lines.
+2. **Sharp silhouette.** The outline shape reads first, even as a flat black shape.
+3. **Flat shading, minimal dithering.** Hard tone steps, no dotted gradients (sky bands are hard bands now).
+4. **Distinct pixel clusters.** Group pixels into readable clumps (leaves, bricks, windows), not noise.
+Test rule: try a new detail on minimal clothing / a plain body first, then add complex gear.
+Palette is no longer strictly limited (Bailey: break that rule if something else helps).
