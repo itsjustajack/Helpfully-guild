@@ -181,7 +181,14 @@ def car(X,z,c):
     for y in range(y0,yb):
         for x in range(x0,x1): put(x,y,fog(c if y>y0+.45*s else hx("#2a2858"),z))
 car(1.5,30,hx("#d8434f")); car(-1.6,38,hx("#e8e0d0"))
-out=im.quantize(64,method=Image.Quantize.MEDIANCUT,dither=Image.Dither.NONE).convert("RGB")
+PAL=["#1d1a3a","#2a2250","#3b3170","#5a3f86","#8a4a90","#c05a86","#e8776e","#ffa06a","#ffc383","#f2a58e","#e58a98",
+"#8a6aa0","#6a5a9a","#4a3f82","#f08a2a","#b05a30","#d83030","#8e2040","#4a6ad0","#2f4496","#e0d0b0","#a09080",
+"#ffd36b","#2a2858","#5a5aa0","#1f5a3a","#2f8a3a","#4fb83a","#8ee04a","#d0f470","#3b3354","#8a7eb0","#f2c14e","#e2dce8","#4a2f44","#3fa7a3"]
+pim=Image.new("P",(1,1)); flat=[]
+for c in PAL: flat+=list(hx(c))
+pim.putpalette(flat+[0]*(768-len(flat)))
+out=im.quantize(palette=pim,dither=Image.Dither.NONE).convert("RGB")
+rich=im.quantize(128,method=Image.Quantize.MEDIANCUT,dither=Image.Dither.NONE).convert("RGB"); rich.save("street_dusk_art_256_rich.png")
 out.save("street_dusk_art_256.png"); out.resize((1024,1024),Image.NEAREST).save("street_dusk_x4.png")
 print("colours:",len(out.getcolors(100000)))
 ref=Image.open("../../style-guide/references/ref_city_street.webp").convert("RGB").resize((512,512))
