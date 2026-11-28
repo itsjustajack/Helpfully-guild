@@ -7,8 +7,33 @@ def lerp(a,b,t): return tuple(max(0,min(255,int(a[i]+(b[i]-a[i])*t))) for i in r
 def hsh(*a): return (hash(a)&0xffff)/65535.0
 SKY=[hx(c) for c in ("#3b3170","#5a3f86","#8a4a90","#c05a86","#e8776e","#ffa06a","#ffc383")]
 im=Image.new("RGB",(W,H)); px=im.load()
+STEPS=18
+def skycol(k):
+    pos=k/(STEPS-1)*(len(SKY)-1); i=min(int(pos),len(SKY)-2); return lerp(SKY[i],SKY[i+1],pos-i)
 for y in range(H):
-    for x in range(W): px[x,y]=SKY[min(6,int(y/H*7*1.0))]
+    k=min(STEPS-1,int(y/ (H*0.78) *STEPS))
+    for x in range(W): px[x,y]=skycol(k)
+rs=random.Random(5)
+# far skyline: two flat layers with a few lit windows (hard shapes, no dither)
+def skyline(base,hmin,hmax,col,win,seed):
+    r=random.Random(seed); x=-6
+    while x<W:
+        w=r.randint(14,30); h=r.randint(hmin,hmax)
+        for xx in range(x,min(W,x+w)):
+            for yy in range(base-h,base):
+                if 0<=xx<W and 0<=yy<H:
+                    c=col
+                    if xx==x or xx==x+1: c=lerp(col,(255,190,150),.22)
+                    if win and (xx-x)%5 in (2,3) and (yy%6) in (2,3) and yy<base-4 and 3<xx-x<w-3 and hsh(xx//5,yy//6,seed)<.3: c=hx("#ffd890")
+                    px[xx,yy]=c
+        if r.random()<.4:
+            for yy in range(base-h-8,base-h):
+                if 0<=x+w//2<W and 0<=yy<H: px[x+w//2,yy]=col
+        x+=w+r.randint(-4,3)
+skyline(232,40,110,hx("#7a4e8e"),False,1)
+skyline(246,26,80,hx("#5a3a7e"),True,2)
+for yy in range(246,H):
+    for xx in range(W): px[xx,yy]=lerp(hx("#5a3a7e"),hx("#2a2048"),(yy-246)/(H-246))
 def put(x,y,c):
     if 0<=x<W and 0<=y<H: px[x,y]=c
 def scr(gx,gy,gz=0): return int(round(OX+(gx-gy)*16)), int(round(OY+(gx+gy)*8-gz))
@@ -134,14 +159,18 @@ S=3; big=art.resize((W*S,H*S),Image.NEAREST); big.save("iso_block_x3.png")
 try:
     import numpy as np
     a=np.asarray(big).astype("float32")/255
-    lum=a.max(axis=2); bright=np.where((lum>0.86)[...,None],a,0)
-    bl=Image.fromarray((bright*255).astype("uint8")).filter(ImageFilter.GaussianBlur(14))
-    a=np.clip(a+np.asarray(bl).astype("float32")/255*1.1,0,1)
+    art_np=np.asarray(art).astype("int16")
+    def near(c,t=10): return (abs(art_np-np.array(c)).sum(axis=2)<t)
+    lights=near((255,211,107))|near((255,224,168))|near((255,217,140),14)
+    lm=np.kron(lights,np.ones((S,S),dtype=bool))
+    bright=np.where(lm[...,None],a,0)
+    bl=Image.fromarray((bright*255).astype("uint8")).filter(ImageFilter.GaussianBlur(10))
+    a=np.clip(a+np.asarray(bl).astype("float32")/255*1.0,0,1)
     blur=np.asarray(Image.fromarray((a*255).astype("uint8")).filter(ImageFilter.GaussianBlur(5))).astype("float32")/255
     yy=np.linspace(0,1,a.shape[0])[:,None,None]; m=np.clip(np.maximum((0.22-yy)/0.22,(yy-0.78)/0.22),0,1)
     a=a*(1-m)+blur*m
     xx=np.linspace(-1,1,a.shape[1])[None,:,None]; yv=np.linspace(-1,1,a.shape[0])[:,None,None]
-    vig=1-0.35*np.clip(xx**2+yv**2-0.25,0,1); a=a*vig
+    vig=1-0.28*np.clip(xx**2+yv**2-0.25,0,1); a=a*vig
     a=a*np.array([1.04,1.0,0.96])
     Image.fromarray((np.clip(a,0,1)*255).astype("uint8")).save("iso_block_hd2d.png")
     print("hd2d ok")
