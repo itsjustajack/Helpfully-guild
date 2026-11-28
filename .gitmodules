@@ -43,3 +43,9 @@
 [submodule "third_party/skillers"]
 	path = third_party/skillers
 	url = https://github.com/agent-sh/skillers.git
+[submodule "third_party/awesome-gamedev-agent-skills"]
+	path = third_party/awesome-gamedev-agent-skills
+	url = https://github.com/gamedev-skills/awesome-gamedev-agent-skills.git
+[submodule "third_party/crucible"]
+	path = third_party/crucible
+	url = https://github.com/codepawl/crucible.git
